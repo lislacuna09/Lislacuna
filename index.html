@@ -3,57 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lis | Diseño Gráfico</title>
+  <title>Lacuna | Liseth Vargas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rokkitt:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header">
-    <h1>Lis</h1>
-    <p class="tagline">Diseño Gráfico &amp; Dirección de Arte</p>
-    <nav>
-      <a href="#trabajos">Trabajos</a>
-      <a href="#sobre-mi">Sobre mí</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
+    <a class="logo" href="#home">
+      <img src="LOGO.png" alt="Lacuna" data-i18n-alt="alt.logo" />
+    </a>
+    <div class="nav-wrap">
+      <nav aria-label="Principal" data-i18n-aria="aria.nav">
+        <ul>
+          <li><a class="nav-link is-active" href="#home" data-i18n="nav.home">HOME</a></li>
+          <li><a class="nav-link" href="#categorias" data-i18n="nav.categories">CATEGORÍAS</a></li>
+          <li><a class="nav-link" href="#contacto" data-i18n="nav.contact">CONTACTO</a></li>
+        </ul>
+      </nav>
+      <div class="lang" role="group" aria-label="Idioma" data-i18n-aria="aria.lang">
+        <button type="button" data-lang="es" aria-pressed="true">ES</button>
+        <span aria-hidden="true">|</span>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
   </header>
 
   <main>
-    <section id="trabajos">
-      <h2>Trabajos</h2>
-      <div class="grid">
-        <article class="card">
-          <div class="thumb" aria-hidden="true"></div>
-          <h3>Proyecto 1</h3>
-          <p>Descripción breve del proyecto.</p>
-        </article>
-        <article class="card">
-          <div class="thumb" aria-hidden="true"></div>
-          <h3>Proyecto 2</h3>
-          <p>Descripción breve del proyecto.</p>
-        </article>
-        <article class="card">
-          <div class="thumb" aria-hidden="true"></div>
-          <h3>Proyecto 3</h3>
-          <p>Descripción breve del proyecto.</p>
-        </article>
+    <section class="home" id="home">
+      <img class="hero-illustration" src="RecursoHome1.png" alt="Moto y cámara" data-i18n-alt="alt.res1" />
+
+      <a class="scroll-down" href="#composicion" aria-label="Bajar" data-i18n-aria="aria.down">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>
+      </a>
+
+      <div class="composition" id="composicion">
+        <img src="RecursoHome2.png" alt="Portafolio 2026 Liseth Vargas" data-i18n-alt="alt.res2" />
+        <p class="bio" data-i18n="bio">Como <strong>Alquimista visual,</strong> transformo conceptos abstractos como el Barrio donde crecí, mi amor por el café o la idea de libertad que siento cuando voy en mi moto escuchando una buena canción, en un sistema de texturas, colores y formas que generan algo en aquellos ojos que tienen la intención de ver.</p>
       </div>
-    </section>
 
-    <section id="sobre-mi">
-      <h2>Sobre mí</h2>
-      <p>Cuenta aquí tu historia, enfoque de diseño y experiencia.</p>
-    </section>
-
-    <section id="contacto">
-      <h2>Contacto</h2>
-      <p>Email: <a href="mailto:tu-email@ejemplo.com">tu-email@ejemplo.com</a></p>
+      <footer class="home-footer">
+        <p data-i18n="footer">DISEÑO WEB LISETH VARGAS <span class="year">2026</span></p>
+      </footer>
     </section>
   </main>
 
-  <footer>
-    <p>&copy; <span id="year"></span> Lis. Todos los derechos reservados.</p>
-  </footer>
-
   <script src="script.js"></script>
 </body>
-</html>
+</html></html>
