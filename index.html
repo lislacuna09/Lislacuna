@@ -4,102 +4,130 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lacuna | Liseth Vargas</title>
+  <meta name="description" content="Portafolio de diseño gráfico de Liseth Vargas: editorial, ilustración y fotografía." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rokkitt:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rokkitt:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <header class="site-header">
-    <a class="logo" href="#home" data-view="home">
-      <img src="LOGO.png" alt="Lacuna" data-i18n-alt="alt.logo" />
+<body data-route="home">
+  <header class="hdr">
+    <a class="hdr-logo" href="#home" aria-label="Lacuna, inicio">
+      <img src="assets/img/logo.svg" alt="Lacuna" width="421" height="67" />
     </a>
-    <div class="nav-wrap">
-      <nav aria-label="Principal" data-i18n-aria="aria.nav">
-        <ul>
-          <li><a class="nav-link is-active" href="#home" data-view="home" data-i18n="nav.home">HOME</a></li>
-          <li><a class="nav-link" href="#categorias" data-view="categorias" data-i18n="nav.categories">CATEGORÍAS</a></li>
-          <li><a class="nav-link" href="#contacto" data-i18n="nav.contact">CONTACTO</a></li>
-        </ul>
-      </nav>
-      <div class="lang" role="group" aria-label="Idioma" data-i18n-aria="aria.lang">
-        <button type="button" data-lang="es" aria-pressed="true">ES</button>
-        <span aria-hidden="true">|</span>
-        <button type="button" data-lang="en" aria-pressed="false">EN</button>
-      </div>
+    <nav class="hdr-nav" aria-label="Principal" data-i18n-aria="aria.nav">
+      <a href="#home" data-nav="home" data-i18n="nav.home">HOME</a>
+      <a href="#portafolio" data-nav="portafolio" data-i18n="nav.portfolio">PORTAFOLIO</a>
+      <a href="#contacto" data-nav="contacto" data-i18n="nav.contact">CONTACTO</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Idioma" data-i18n-aria="aria.lang">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <span aria-hidden="true">|</span>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
     </div>
   </header>
 
   <main>
     <!-- HOME -->
-    <section class="view home is-active" id="home">
-      <img class="hero-illustration" src="RecursoHome1.png" alt="Moto y cámara" data-i18n-alt="alt.res1" />
+    <section class="view v-home" id="v-home" data-view="home">
+      <div class="cv home">
+        <div class="home-arch" aria-hidden="true"></div>
+        <img class="home-arctext" src="assets/img/diseno-grafico-arco.png" alt="Diseño gráfico" data-i18n-alt="alt.arc" />
+        <img class="home-moto" src="assets/img/moto-camara.png" alt="Ilustración de una moto y una cámara Minolta" data-i18n-alt="alt.moto" />
+        <a class="home-down" href="#sobre-mi" aria-label="Bajar" data-i18n-aria="aria.down">
+          <svg viewBox="0 0 42 22" aria-hidden="true"><path d="M2 2l19 18L40 2" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <img class="home-retrato" src="assets/img/retrato.png" alt="Liseth Vargas sosteniendo una cámara" data-i18n-alt="alt.portrait" />
 
-      <a class="scroll-down" href="#composicion" aria-label="Bajar" data-i18n-aria="aria.down">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>
-      </a>
+        <h1 class="home-title" id="sobre-mi">
+          <span class="ht-porta">PORTA</span>
+          <span class="ht-folio">FOLIO<span class="ht-year" aria-label="2026"><span>20</span><span>26</span></span></span>
+          <span class="ht-firma"><span class="brace" aria-hidden="true">{</span><img src="assets/img/firma.svg" alt="Liseth Vargas" /><span class="brace" aria-hidden="true">}</span></span>
+        </h1>
 
-      <div class="composition" id="composicion">
-        <img src="RecursoHome2.png" alt="Portafolio 2026 Liseth Vargas" data-i18n-alt="alt.res2" />
-        <p class="bio" data-i18n="bio">Como <strong>Alquimista visual,</strong> transformo conceptos abstractos como el Barrio donde crecí, mi amor por el café o la idea de libertad que siento cuando voy en mi moto escuchando una buena canción, en un sistema de texturas, colores y formas que generan algo en aquellos ojos que tienen la intención de ver.</p>
+        <div class="home-info">
+          <p class="home-bio" data-i18n="bio">Como <strong>Alquimista visual,</strong> transformo conceptos abstractos como el Barrio donde crecí, mi amor por el café o la idea de libertad que siento cuando voy en mi moto escuchando una buena canción, en un sistema de texturas, colores y formas que generan algo en aquellos ojos que tienen la intención de ver.</p>
+          <h2 class="home-tools-title" data-i18n="tools">HERRAMIENTAS</h2>
+          <ul class="home-tools">
+            <li><img src="assets/img/tool-ps.svg" alt="" />Photoshop</li>
+            <li><img src="assets/img/tool-ai.svg" alt="" />Illustrator</li>
+            <li><img src="assets/img/tool-pr.svg" alt="" />Premiere</li>
+            <li><img src="assets/img/tool-lr.svg" alt="" />Lightroom</li>
+            <li><img src="assets/img/tool-id.svg" alt="" />InDesign</li>
+          </ul>
+        </div>
+
+        <p class="home-foot"><b data-i18n="foot">DISEÑO WEB</b> LISETH VARGAS <span>2026</span></p>
       </div>
-
-      <footer class="home-footer">
-        <p data-i18n="footer">DISEÑO WEB LISETH VARGAS <span class="year">2026</span></p>
-      </footer>
     </section>
 
-    <!-- CATEGORÍAS -->
-    <section class="view categorias" id="categorias" hidden>
-      <div class="cat-bgs" aria-hidden="true">
-        <div class="cat-bg cat-bg--editorial is-active"></div>
-        <div class="cat-bg cat-bg--fotografia"></div>
-        <div class="cat-bg cat-bg--ilustracion"></div>
+    <!-- PORTAFOLIO: categorías -->
+    <section class="view v-cats" id="v-cats" data-view="portafolio" hidden>
+      <div class="cats-bgs" aria-hidden="true"></div>
+      <div class="cv cats">
+        <div class="cats-titles" aria-live="polite"></div>
+        <button type="button" class="arrow arrow-prev" aria-label="Anterior" data-i18n-aria="aria.prev"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M24 2L3 23l21 21"/></svg></button>
+        <div class="cats-stage"></div>
+        <button type="button" class="arrow arrow-next" aria-label="Siguiente" data-i18n-aria="aria.next"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M2 2l21 21L2 44"/></svg></button>
+        <div class="dots cats-dots" role="tablist"></div>
       </div>
+    </section>
 
-           <div class="cat-inner">
-        <div class="cat-titles" aria-live="polite">
-          <h2 class="cat-title is-active" data-i18n="cat.editorial">Editorial</h2>
-          <h2 class="cat-title" data-i18n="cat.photo">Fotografía</h2>
-          <h2 class="cat-title" data-i18n="cat.illustration">Ilustración</h2>
-        </div>
+    <!-- PORTAFOLIO: proyectos de una categoría -->
+    <section class="view v-proj" id="v-proj" data-view="categoria" hidden>
+      <div class="cv proj">
+        <button type="button" class="arrow arrow-prev" aria-label="Anterior" data-i18n-aria="aria.prev"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M24 2L3 23l21 21"/></svg></button>
+        <div class="proj-cards"></div>
+        <button type="button" class="arrow arrow-next" aria-label="Siguiente" data-i18n-aria="aria.next"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M2 2l21 21L2 44"/></svg></button>
+        <div class="dots proj-dots" role="tablist"></div>
+        <div class="proj-text" aria-live="polite"></div>
+      </div>
+    </section>
 
-        <div class="carousel-row" role="group" aria-roledescription="carousel" aria-label="Categorías" data-i18n-aria="aria.cats">
-          <button type="button" class="arrow arrow--prev" aria-label="Anterior" data-i18n-aria="aria.prev">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4l-8 8 8 8"/></svg>
-          </button>
+    <!-- PORTAFOLIO: sección de un proyecto -->
+    <section class="view v-sec" id="v-sec" data-view="seccion" hidden>
+      <div class="sec">
+        <a class="sec-back" href="#portafolio"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M24 2L3 23l21 21"/></svg><span></span></a>
+        <div class="sec-body"></div>
+      </div>
+    </section>
 
-          <div class="slides">
-            <button type="button" class="slide is-active" aria-label="Editorial" data-i18n-aria="cat.editorial">
-              <img src="BotonE.png" alt="" draggable="false" />
-            </button>
-            <button type="button" class="slide is-next" tabindex="-1" aria-hidden="true" aria-label="Fotografía" data-i18n-aria="cat.photo">
-              <img src="BotonF.png" alt="" draggable="false" />
-            </button>
-            <button type="button" class="slide is-next" tabindex="-1" aria-hidden="true" aria-label="Ilustración" data-i18n-aria="cat.illustration">
-              <img src="BotonI.png" alt="" draggable="false" />
-            </button>
-          </div>
-
-          <button type="button" class="arrow arrow--next" aria-label="Siguiente" data-i18n-aria="aria.next">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4l8 8-8 8"/></svg>
-          </button>
-        </div>
-
-        <div class="slider">
-          <img class="bar is-active" src="BarraDeslizadoraIzquierda.png" alt="" draggable="false" />
-          <img class="bar" src="BarraDeslizadoraCentro.png" alt="" draggable="false" />
-          <img class="bar" src="BarraDeslizadoraDerecha.png" alt="" draggable="false" />
-          <div class="slider-hits">
-            <button type="button" class="hit" aria-label="Editorial" data-i18n-aria="cat.editorial"></button>
-            <button type="button" class="hit" aria-label="Fotografía" data-i18n-aria="cat.photo"></button>
-            <button type="button" class="hit" aria-label="Ilustración" data-i18n-aria="cat.illustration"></button>
-          </div>
-        </div>
+    <!-- CONTACTO -->
+    <section class="view v-contact" id="v-contact" data-view="contacto" hidden>
+      <div class="cv contact">
+        <h2 class="contact-title" data-i18n="contact.title">CONTÁCTAME</h2>
+        <form class="contact-form" novalidate>
+          <label class="sr" for="f-nombre" data-i18n="contact.name">Nombre</label>
+          <input id="f-nombre" name="nombre" type="text" autocomplete="name" required placeholder="Nombre" data-i18n-ph="contact.name" />
+          <label class="sr" for="f-correo" data-i18n="contact.email">Correo</label>
+          <input id="f-correo" name="correo" type="email" autocomplete="email" required placeholder="Correo" data-i18n-ph="contact.email" />
+          <label class="sr" for="f-mensaje" data-i18n="contact.msg">Mensaje</label>
+          <textarea id="f-mensaje" name="mensaje" required placeholder="Mensaje" data-i18n-ph="contact.msg"></textarea>
+          <button type="submit" class="pill-btn" data-i18n="contact.send">ENVIAR</button>
+          <p class="form-note" role="status"></p>
+        </form>
+        <img class="contact-gato" src="assets/img/gato.png" alt="Ilustración de un gato" data-i18n-alt="alt.cat" />
+        <a class="contact-item ci-mail" href="mailto:lislacuna09@gmail.com">
+          <img src="assets/img/icono-a.svg" alt="" />
+          <span><small data-i18n="contact.leave">Deja tu mensaje</small><b>lislacuna09@gmail.com</b></span>
+        </a>
+        <a class="contact-item ci-ig" href="https://www.instagram.com/lislacuna/" target="_blank" rel="noopener">
+          <img src="assets/img/icono-b.svg" alt="" />
+          <span><small data-i18n="contact.follow">Sígueme en</small><b>@lislacuna</b></span>
+        </a>
       </div>
     </section>
   </main>
 
+  <div class="lightbox" hidden>
+    <button type="button" class="lb-close" aria-label="Cerrar" data-i18n-aria="aria.close">&times;</button>
+    <button type="button" class="lb-prev arrow" aria-label="Anterior" data-i18n-aria="aria.prev"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M24 2L3 23l21 21"/></svg></button>
+    <img class="lb-img" alt="" />
+    <button type="button" class="lb-next arrow" aria-label="Siguiente" data-i18n-aria="aria.next"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M2 2l21 21L2 44"/></svg></button>
+    <p class="lb-count"></p>
+  </div>
+
+  <script src="assets/galerias.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
