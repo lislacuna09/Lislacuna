@@ -5,9 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lacuna | Liseth Vargas</title>
   <meta name="description" content="Portafolio de diseño gráfico de Liseth Vargas: editorial, ilustración y fotografía." />
+  <meta name="theme-color" content="#cbc8cf" />
+  <link rel="canonical" href="https://lislacuna.vercel.app/" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Lacuna" />
+  <meta property="og:title" content="Lacuna | Liseth Vargas · Diseño gráfico" />
+  <meta property="og:description" content="Portafolio de diseño gráfico de Liseth Vargas: editorial, ilustración y fotografía." />
+  <meta property="og:url" content="https://lislacuna.vercel.app/" />
+  <meta property="og:image" content="https://lislacuna.vercel.app/assets/img/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="es_CO" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rokkitt:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rokkitt:wght@300;400;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="assets/img/moto-camara.webp" fetchpriority="high" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body data-route="home">
@@ -32,28 +48,28 @@
     <section class="view v-home" id="v-home" data-view="home">
       <div class="cv home">
         <div class="home-arch" aria-hidden="true"></div>
-        <img class="home-arctext" src="assets/img/diseno-grafico-arco.png" alt="Diseño gráfico" data-i18n-alt="alt.arc" />
-        <img class="home-moto" src="assets/img/moto-camara.png" alt="Ilustración de una moto y una cámara Minolta" data-i18n-alt="alt.moto" />
+        <img class="home-arctext" src="assets/img/diseno-grafico-arco.webp" width="374" height="268" alt="Diseño gráfico" data-i18n-alt="alt.arc" />
+        <img class="home-moto" src="assets/img/moto-camara.webp" width="1590" height="944" fetchpriority="high" alt="Ilustración de una moto y una cámara Minolta" data-i18n-alt="alt.moto" />
         <a class="home-down" href="#sobre-mi" aria-label="Bajar" data-i18n-aria="aria.down">
           <svg viewBox="0 0 42 22" aria-hidden="true"><path d="M2 2l19 18L40 2" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <img class="home-retrato" src="assets/img/retrato.png" alt="Liseth Vargas sosteniendo una cámara" data-i18n-alt="alt.portrait" />
+        <img class="home-retrato" src="assets/img/retrato.webp" width="1136" height="1460" decoding="async" alt="Liseth Vargas sosteniendo una cámara" data-i18n-alt="alt.portrait" />
 
-        <h1 class="home-title" id="sobre-mi">
+        <h1 class="home-title" id="sobre-mi" aria-label="Portafolio 2026, Liseth Vargas">
           <span class="ht-porta">PORTA</span>
           <span class="ht-folio">FOLIO<span class="ht-year" aria-label="2026"><span>20</span><span>26</span></span></span>
-          <span class="ht-firma"><span class="brace" aria-hidden="true">{</span><img src="assets/img/firma.svg" alt="Liseth Vargas" /><span class="brace" aria-hidden="true">}</span></span>
+          <span class="ht-firma"><span class="brace" aria-hidden="true">{</span><img src="assets/img/firma.svg" width="379" height="80" alt="Liseth Vargas" /><span class="brace" aria-hidden="true">}</span></span>
         </h1>
 
         <div class="home-info">
           <p class="home-bio" data-i18n="bio">Como <strong>Alquimista visual,</strong> transformo conceptos abstractos como el Barrio donde crecí, mi amor por el café o la idea de libertad que siento cuando voy en mi moto escuchando una buena canción, en un sistema de texturas, colores y formas que generan algo en aquellos ojos que tienen la intención de ver.</p>
           <h2 class="home-tools-title" data-i18n="tools">HERRAMIENTAS</h2>
           <ul class="home-tools">
-            <li><img src="assets/img/tool-ps.svg" alt="" />Photoshop</li>
-            <li><img src="assets/img/tool-ai.svg" alt="" />Illustrator</li>
-            <li><img src="assets/img/tool-pr.svg" alt="" />Premiere</li>
-            <li><img src="assets/img/tool-lr.svg" alt="" />Lightroom</li>
-            <li><img src="assets/img/tool-id.svg" alt="" />InDesign</li>
+            <li><img src="assets/img/tool-ps.svg" width="83" height="83" alt="" />Photoshop</li>
+            <li><img src="assets/img/tool-ai.svg" width="83" height="83" alt="" />Illustrator</li>
+            <li><img src="assets/img/tool-pr.svg" width="83" height="83" alt="" />Premiere</li>
+            <li><img src="assets/img/tool-lr.svg" width="81" height="81" alt="" />Lightroom</li>
+            <li><img src="assets/img/tool-id.svg" width="81" height="81" alt="" />InDesign</li>
           </ul>
         </div>
 
@@ -76,6 +92,7 @@
     <!-- PORTAFOLIO: proyectos de una categoría -->
     <section class="view v-proj" id="v-proj" data-view="categoria" hidden>
       <div class="cv proj">
+        <h1 class="sr proj-h1"></h1>
         <button type="button" class="arrow arrow-prev" aria-label="Anterior" data-i18n-aria="aria.prev"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M24 2L3 23l21 21"/></svg></button>
         <div class="proj-cards"></div>
         <button type="button" class="arrow arrow-next" aria-label="Siguiente" data-i18n-aria="aria.next"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M2 2l21 21L2 44"/></svg></button>
@@ -95,8 +112,8 @@
     <!-- CONTACTO -->
     <section class="view v-contact" id="v-contact" data-view="contacto" hidden>
       <div class="cv contact">
-        <h2 class="contact-title" data-i18n="contact.title">CONTÁCTAME</h2>
-        <form class="contact-form" novalidate>
+        <h1 class="contact-title" data-i18n="contact.title">CONTÁCTAME</h1>
+        <form class="contact-form" novalidate aria-describedby="form-note">
           <label class="sr" for="f-nombre" data-i18n="contact.name">Nombre</label>
           <input id="f-nombre" name="nombre" type="text" autocomplete="name" required placeholder="Nombre" data-i18n-ph="contact.name" />
           <label class="sr" for="f-correo" data-i18n="contact.email">Correo</label>
@@ -104,22 +121,22 @@
           <label class="sr" for="f-mensaje" data-i18n="contact.msg">Mensaje</label>
           <textarea id="f-mensaje" name="mensaje" required placeholder="Mensaje" data-i18n-ph="contact.msg"></textarea>
           <button type="submit" class="pill-btn" data-i18n="contact.send">ENVIAR</button>
-          <p class="form-note" role="status"></p>
+          <p class="form-note" id="form-note" role="status"></p>
         </form>
-        <img class="contact-gato" src="assets/img/gato.png" alt="Ilustración de un gato" data-i18n-alt="alt.cat" />
+        <img class="contact-gato" src="assets/img/gato.webp" width="800" height="1065" loading="lazy" decoding="async" alt="Ilustración de un gato" data-i18n-alt="alt.cat" />
         <a class="contact-item ci-mail" href="mailto:lislacuna09@gmail.com">
-          <img src="assets/img/icono-a.svg" alt="" />
+          <img src="assets/img/icono-a.svg" width="53" height="38" alt="" />
           <span><small data-i18n="contact.leave">Deja tu mensaje</small><b>lislacuna09@gmail.com</b></span>
         </a>
         <a class="contact-item ci-ig" href="https://www.instagram.com/lislacuna/" target="_blank" rel="noopener">
-          <img src="assets/img/icono-b.svg" alt="" />
+          <img src="assets/img/icono-b.svg" width="38" height="38" alt="" />
           <span><small data-i18n="contact.follow">Sígueme en</small><b>@lislacuna</b></span>
         </a>
       </div>
     </section>
   </main>
 
-  <div class="lightbox" hidden>
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label="Galería" data-i18n-aria="aria.gallery" hidden>
     <button type="button" class="lb-close" aria-label="Cerrar" data-i18n-aria="aria.close">&times;</button>
     <button type="button" class="lb-prev arrow" aria-label="Anterior" data-i18n-aria="aria.prev"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M24 2L3 23l21 21"/></svg></button>
     <img class="lb-img" alt="" />

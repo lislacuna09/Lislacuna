@@ -14,7 +14,7 @@
           credit: { es: "Proyecto grupal.", en: "Group project." },
           section: { type: "slide", src: "sec-comic" } },
         { id: "lexeco", img: "proy-lexeco", sub: { es: "REVISTA", en: "MAGAZINE" }, title: { es: "LEXECO", en: "LEXECO" },
-          desc: { es: "Es un proyecto realizado como ejercicio académico, se propuso una revista que fusionara dos campos completamente distintos; Derecho y Cuidado ambiental.",
+          desc: { es: "Es un proyecto realizado como ejercicio académico, se propuso una revista que fusionara dos campos completamente distintos: Derecho y Cuidado ambiental.",
                   en: "An academic project: a magazine that merges two completely different fields, Law and Environmental care." },
           credit: { es: "Proyecto individual.", en: "Individual project." },
           section: { type: "video", src: "assets/video/lexeco.mp4", poster: "sec-lexeco" } },
@@ -55,7 +55,7 @@
   const T = {
     es: {
       "nav.home": "HOME", "nav.portfolio": "PORTAFOLIO", "nav.contact": "CONTACTO",
-      "aria.nav": "Principal", "aria.lang": "Idioma", "aria.down": "Bajar", "aria.prev": "Anterior", "aria.next": "Siguiente", "aria.close": "Cerrar",
+      "aria.nav": "Principal", "aria.lang": "Idioma", "aria.down": "Bajar", "aria.prev": "Anterior", "aria.next": "Siguiente", "aria.close": "Cerrar", "aria.gallery": "Galería",
       "alt.arc": "Diseño gráfico", "alt.moto": "Ilustración de una moto y una cámara Minolta", "alt.portrait": "Liseth Vargas sosteniendo una cámara", "alt.cat": "Ilustración de un gato",
       bio: "Como <strong>Alquimista visual,</strong> transformo conceptos abstractos como el Barrio donde crecí, mi amor por el café o la idea de libertad que siento cuando voy en mi moto escuchando una buena canción, en un sistema de texturas, colores y formas que generan algo en aquellos ojos que tienen la intención de ver.",
       tools: "HERRAMIENTAS", foot: "DISEÑO WEB",
@@ -67,7 +67,7 @@
     },
     en: {
       "nav.home": "HOME", "nav.portfolio": "PORTFOLIO", "nav.contact": "CONTACT",
-      "aria.nav": "Main", "aria.lang": "Language", "aria.down": "Scroll down", "aria.prev": "Previous", "aria.next": "Next", "aria.close": "Close",
+      "aria.nav": "Main", "aria.lang": "Language", "aria.down": "Scroll down", "aria.prev": "Previous", "aria.next": "Next", "aria.close": "Close", "aria.gallery": "Gallery",
       "alt.arc": "Graphic design", "alt.moto": "Illustration of a motorcycle and a Minolta camera", "alt.portrait": "Liseth Vargas holding a camera", "alt.cat": "Illustration of a cat",
       bio: "As a <strong>visual alchemist,</strong> I transform abstract concepts like the neighborhood where I grew up, my love for coffee or the feeling of freedom when I ride my motorcycle listening to a good song, into a system of textures, colors and shapes that spark something in the eyes that intend to see.",
       tools: "TOOLS", foot: "WEB DESIGN",
@@ -101,12 +101,12 @@
   /* ---------- Categorías ---------- */
   const cats = { bgs: $(".cats-bgs"), titles: $(".cats-titles"), stage: $(".cats-stage"), dots: $(".cats-dots") };
   CATS.forEach((c, i) => {
-    cats.bgs.append(el("div", { class: "cats-bg", style: `background-image:url(${IMG}${c.tex}.jpg)` }));
-    cats.titles.append(el("h2", { class: "cats-title" }));
+    cats.bgs.append(el("div", { class: "cats-bg", style: `background-image:url(${IMG}${c.tex}.webp)` }));
+    cats.titles.append(el("h1", { class: "cats-title" }));
     const slide = el("button", { type: "button", class: "cats-slide", "data-i": i });
     slide.innerHTML = Array.isArray(c.cover)
-      ? `<span class="ekos">${c.cover.map(s => `<img src="${IMG}${s}.jpg" alt="" draggable="false" />`).join("")}</span>`
-      : `<img src="${IMG}${c.cover}.jpg" alt="" draggable="false" />`;
+      ? `<span class="ekos">${c.cover.map(s => `<img src="${IMG}${s}.webp" width="760" height="991" loading="lazy" decoding="async" alt="" draggable="false" />`).join("")}</span>`
+      : `<img src="${IMG}${c.cover}.webp" srcset="${IMG}${c.cover}-900.webp 900w, ${IMG}${c.cover}.webp 1800w" sizes="(min-width: 900px) 61vw, 90vw" width="1800" height="761" loading="lazy" decoding="async" alt="" draggable="false" />`;
     slide.addEventListener("click", () => { if (!swallowClick) location.hash = `#portafolio/${c.id}`; });
     cats.stage.append(slide);
     const d = el("button", { type: "button", class: "dot", role: "tab", "data-i": i });
@@ -117,7 +117,11 @@
   function setCat(i) {
     catIdx = (i + CATS.length) % CATS.length;
     $$(".cats-bg").forEach((b, k) => b.classList.toggle("is-active", k === catIdx));
-    $$(".cats-title").forEach((h, k) => { h.classList.toggle("is-active", k === catIdx); h.textContent = L(CATS[k].name); });
+    $$(".cats-title").forEach((h, k) => {
+      h.classList.toggle("is-active", k === catIdx);
+      h.setAttribute("aria-hidden", String(k !== catIdx));
+      h.textContent = L(CATS[k].name);
+    });
     $$(".cats-slide").forEach((s, k) => {
       const on = k === catIdx;
       s.classList.toggle("is-active", on);
@@ -136,10 +140,11 @@
 
   function renderProj(cat) {
     projCat = cat;
+    $(".proj-h1").textContent = `${t("nav.portfolio")}: ${L(cat.name)}`;
     proj.cards.innerHTML = ""; proj.dots.innerHTML = ""; proj.text.innerHTML = "";
     cat.projects.forEach((p, i) => {
       const card = el("button", { type: "button", class: "card", "data-i": i });
-      card.innerHTML = `<img src="${IMG}${p.img}.jpg" alt="" draggable="false" />`;
+      card.innerHTML = `<img src="${IMG}${p.img}.webp" width="820" height="1186" decoding="async" alt="" draggable="false" />`;
       card.addEventListener("click", () => {
         if (swallowClick) return;
         if (i === projIdx[cat.id]) location.hash = `#portafolio/${cat.id}/${p.id}`;
@@ -176,24 +181,26 @@
   let galList = [];
 
   function renderSec(cat, p) {
-    secView.style.backgroundImage = `url(${IMG}${cat.tex}.jpg)`;
+    secView.style.backgroundImage = `url(${IMG}${cat.tex}.webp)`;
     secBack.href = `#portafolio/${cat.id}`;
     $("span", secBack).textContent = `${t("back")} · ${L(cat.name)}`;
     secBody.className = "sec-body";
     const s = p.section;
     const label = `${L(p.sub)} ${L(p.title)}`;
     if (s.type === "slide") {
-      secBody.innerHTML = `<img class="sec-media" src="${IMG}${s.src}.jpg" alt="${esc(label)}" />` +
-        `<a class="sec-zoom" href="${IMG}${s.src}.jpg" target="_blank" rel="noopener">${t("open")} ↗</a>`;
+      secBody.innerHTML = `<h1 class="sr">${esc(label)}</h1>` +
+        `<img class="sec-media" src="${IMG}${s.src}.webp" srcset="${IMG}${s.src}-1280.webp 1280w, ${IMG}${s.src}.webp 2560w" sizes="(min-width: 900px) 88vw, 100vw" width="2560" height="1440" decoding="async" alt="${esc(label)}" />` +
+        `<a class="sec-zoom" href="${IMG}${s.src}.webp" target="_blank" rel="noopener">${t("open")} ↗</a>`;
     } else if (s.type === "video") {
-      secBody.innerHTML = `<video class="sec-media" src="${s.src}" poster="${IMG}${s.poster}.jpg" autoplay muted loop playsinline controls aria-label="${esc(label)}"></video>`;
+      secBody.innerHTML = `<h1 class="sr">${esc(label)}</h1>` +
+        `<video class="sec-media" src="${s.src}" poster="${IMG}${s.poster}-1280.webp" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="${esc(label)}"></video>`;
     } else {
       secBody.classList.add("is-gal");
       const sizes = (window.GALERIAS || {})[s.key] || [];
       galList = sizes.map((_, i) => `assets/galeria/${s.key}/${String(i + 1).padStart(2, "0")}`);
-      secBody.innerHTML = `<header class="gal-head"><div><p>${esc(L(p.sub))}</p><h2>${esc(L(p.title))}</h2></div><p>${sizes.length} ${t("photos")}</p></header>` +
+      secBody.innerHTML = `<header class="gal-head"><div><p>${esc(L(p.sub))}</p><h1>${esc(L(p.title))}</h1></div><p>${sizes.length} ${t("photos")}</p></header>` +
         `<div class="gal">${sizes.map(([w, h], i) =>
-          `<button type="button" data-i="${i}" aria-label="${esc(label)} ${i + 1}"><img src="${galList[i]}-t.jpg" width="${w}" height="${h}" loading="lazy" decoding="async" alt="" /></button>`).join("")}</div>`;
+          `<button type="button" data-i="${i}" aria-label="${esc(label)} ${i + 1}"><img src="${galList[i]}-t.webp" width="${w}" height="${h}" loading="${i < 8 ? "eager" : "lazy"}" decoding="async" alt="" /></button>`).join("")}</div>`;
       $$(".gal button", secBody).forEach(b => b.addEventListener("click", () => openLb(+b.dataset.i)));
     }
   }
@@ -204,10 +211,24 @@
   function openLb(i) { lbReturn = document.activeElement; lb.hidden = false; showLb(i); $(".lb-close").focus(); document.body.style.overflow = "hidden"; }
   function showLb(i) {
     lbIdx = (i + galList.length) % galList.length;
-    lbImg.src = `${galList[lbIdx]}.jpg`;
+    lbImg.srcset = lbSet(galList[lbIdx]);
+    lbImg.src = `${galList[lbIdx]}.webp`;
     lbCount.textContent = `${lbIdx + 1} / ${galList.length}`;
-    [lbIdx + 1, lbIdx - 1].forEach(k => { const im = new Image(); im.src = `${galList[(k + galList.length) % galList.length]}.jpg`; });
+    [lbIdx + 1, lbIdx - 1].forEach(k => {
+      const im = new Image();
+      im.sizes = lbImg.sizes;
+      im.srcset = lbSet(galList[(k + galList.length) % galList.length]);
+    });
   }
+  const lbSet = base => `${base}-1200.webp 1200w, ${base}.webp 2000w`;
+  lbImg.sizes = "(min-width: 900px) 90vw, 100vw";
+  lb.addEventListener("keydown", e => {
+    if (e.key !== "Tab") return;
+    const f = $$("button", lb);
+    const i = f.indexOf(document.activeElement);
+    if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+  });
   function closeLb() { lb.hidden = true; lbImg.removeAttribute("src"); document.body.style.overflow = ""; if (lbReturn) lbReturn.focus(); }
   $(".lb-close").addEventListener("click", closeLb);
   $(".lb-prev").addEventListener("click", () => showLb(lbIdx - 1));
@@ -282,6 +303,11 @@
       secBody.innerHTML = "";
     }
     views.forEach(v => { v.hidden = v.dataset.view !== route.name; });
+    const cap = s => s.charAt(0) + s.slice(1).toLowerCase();
+    const parts = { home: [], contacto: [cap(t("nav.contact"))], portafolio: [cap(t("nav.portfolio"))] };
+    const sub = route.name === "categoria" ? [cap(L(route.cat.name))]
+      : route.name === "seccion" ? [`${cap(L(route.p.sub))} ${cap(L(route.p.title))}`] : parts[route.name];
+    document.title = [...sub, "Lacuna | Liseth Vargas"].join(" · ");
     if (scroll) window.scrollTo(0, 0);
   }
   window.addEventListener("hashchange", () => render());
@@ -319,6 +345,7 @@
   }
   $$(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
-  CATS.forEach(c => { const i = new Image(); i.src = `${IMG}${c.tex}.jpg`; });
+  const warm = () => CATS.forEach(c => { const i = new Image(); i.src = `${IMG}${c.tex}.webp`; });
+  window.addEventListener("load", () => (window.requestIdleCallback || setTimeout)(warm, { timeout: 3000 }));
   setLang(lang);
 })();
