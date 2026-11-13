@@ -114,8 +114,12 @@ body[data-route="portafolio"] .lang { color: var(--cafe); }
 .home { padding: 150px 1.25rem 2rem; display: flex; flex-direction: column; align-items: center; }
 .home-arch { position: absolute; left: 50%; top: 165px; height: calc(52vw + 165px); width: min(46vw, 260px); transform: translateX(-50%); background: var(--mostaza); border-radius: 999px 999px 0 0; z-index: 0; mix-blend-mode: multiply; }
 .home > *:not(.home-arch) { position: relative; z-index: 1; }
-.home-arctext { width: 32vw; max-width: 170px; margin-top: 1.25rem; }
-.home-moto { width: 100%; max-width: 520px; margin-top: -.5rem; }
+.home-arctext { width: 32vw; max-width: 170px; margin-top: 1.25rem; z-index: 3 !important; }
+.home-morph { position: relative; width: 100%; max-width: 600px; aspect-ratio: 16 / 9; margin-top: -.5rem; }
+.home-morph > * { position: absolute; inset: 0; width: 100%; height: 100%; }
+.home-morph canvas { opacity: 0; transition: opacity .4s; }
+.home-morph.is-live canvas { opacity: 1; }
+.home-morph.is-live .morph-fallback { opacity: 0; }
 .home-down { color: var(--cafe); margin: .5rem 0; padding: 12px 8px; display: block; line-height: 0; transition: transform .25s; }
 .home-down svg { width: 28px; height: 16px; }
 .home-retrato { width: 82%; max-width: 420px; order: 10; margin-top: 2rem; padding: 12% 4% 0; background: var(--mostaza); border-radius: 999px 999px 0 0; }
@@ -137,6 +141,12 @@ body[data-route="portafolio"] .lang { color: var(--cafe); }
 .home-foot { order: 20; margin: 1.5rem 0 0; font-size: .6rem; letter-spacing: .3em; font-weight: 400; text-align: center; }
 .home-foot b { font-weight: 900; }
 .home-foot span { background: var(--cafe); color: var(--crema); font-weight: 900; padding: .15em .35em .15em .55em; border-radius: 3px; }
+
+.home-reel { position: relative; z-index: 2; padding: 3rem 1.25rem 1.5rem; display: flex; flex-direction: column; align-items: center; }
+.reel-title { margin: 0 0 1.25rem; font-weight: 900; font-size: clamp(2.2rem, 11vw, 4rem); letter-spacing: .35em; margin-right: -.35em; line-height: 1; }
+.reel-title span { display: inline-block; vertical-align: super; font-size: .32em; letter-spacing: .4em; color: var(--rojo); margin-left: .2em; }
+.reel-video { width: 100%; max-width: 1280px; aspect-ratio: 16 / 9; background: var(--cafe); box-shadow: 0 22px 40px rgba(40, 24, 14, .35); }
+.home-reel .home-foot { margin-top: 2.5rem; }
 
 /* categorías */
 .v-cats { background: none; }
@@ -266,7 +276,8 @@ body[data-route="portafolio"] .lang { color: var(--cafe); }
   .home > * { position: absolute !important; margin: 0 !important; }
   .home-arch { left: calc(var(--u) * 755); top: calc(var(--u) * 265); bottom: 0; height: auto; width: calc(var(--u) * 411); transform: none; border-radius: calc(var(--u) * 206) calc(var(--u) * 206) 0 0; }
   .home-arctext { left: calc(var(--u) * 866); top: calc(var(--u) * 378); width: calc(var(--u) * 188); max-width: none; }
-  .home-moto { left: calc(var(--u) * 541); top: calc(var(--u) * 443); width: calc(var(--u) * 836); max-width: none; }
+  .home-morph { left: calc(var(--u) * 498); top: calc(var(--u) * 429); width: calc(var(--u) * 909); max-width: none; }
+  .home > .home-morph > * { position: absolute !important; }
   .home-down { left: calc(var(--u) * 939 - 8px); top: calc(var(--u) * 930 - 12px); }
   .home-down svg { width: calc(var(--u) * 42); height: calc(var(--u) * 22); }
   .home-down:hover { transform: translateY(calc(var(--u) * 4)); }
@@ -283,7 +294,10 @@ body[data-route="portafolio"] .lang { color: var(--cafe); }
   .home-tools { justify-content: flex-start; gap: calc(var(--u) * 24); }
   .home-tools li { flex: 0 0 calc(var(--u) * 86); gap: calc(var(--u) * 8); font-size: calc(var(--u) * 17); white-space: nowrap; }
   .home-tools img { width: calc(var(--u) * 84); max-width: none; }
-  .home-foot { right: calc(var(--u) * 176); bottom: calc(var(--u) * 41); font-size: calc(var(--u) * 14); letter-spacing: .38em; }
+  .home-reel { padding: calc(var(--hu) * 60) calc(var(--hu) * 176) calc(var(--hu) * 50); }
+  .reel-title { font-size: calc(var(--hu) * 106); margin-bottom: calc(var(--hu) * 50); }
+  .reel-video { width: calc(var(--hu) * 1440); max-width: 100%; }
+  .home-reel .home-foot { align-self: flex-end; margin-top: calc(var(--hu) * 70); font-size: max(10px, calc(var(--hu) * 14)); letter-spacing: .38em; }
 
   /* CATEGORÍAS (1920 × 1080) */
   .cats { display: block; min-height: 0; padding: 0; aspect-ratio: 1920 / 1080; }

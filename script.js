@@ -27,7 +27,7 @@
     {
       id: "ilustracion", tex: "tex-naranja",
       name: { es: "ILUSTRACIÓN", en: "ILLUSTRATION" },
-      cover: "cat-ilustracion",
+      cover: "cat-ilustracion-b",
       projects: [
         { id: "analoga", img: "proy-analoga", sub: { es: "ILUSTRACIÓN", en: "ANALOG" }, title: { es: "ANÁLOGA", en: "ILLUSTRATION" },
           credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "slide", src: "sec-analoga" } },
@@ -40,7 +40,7 @@
     {
       id: "fotografia", tex: "tex-verde",
       name: { es: "FOTOGRAFÍA", en: "PHOTOGRAPHY" },
-      cover: "cat-fotografia",
+      cover: "cat-fotografia-b",
       projects: [
         { id: "producto", img: "proy-producto", sub: { es: "FOTOGRAFÍA DE", en: "PRODUCT" }, title: { es: "PRODUCTO", en: "PHOTOGRAPHY" },
           credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "producto" } },
@@ -56,7 +56,7 @@
     es: {
       "nav.home": "HOME", "nav.portfolio": "PORTAFOLIO", "nav.contact": "CONTACTO",
       "aria.nav": "Principal", "aria.lang": "Idioma", "aria.down": "Bajar", "aria.prev": "Anterior", "aria.next": "Siguiente", "aria.close": "Cerrar", "aria.gallery": "Galería",
-      "alt.arc": "Diseño gráfico", "alt.moto": "Ilustración de una moto y una cámara Minolta", "alt.portrait": "Liseth Vargas sosteniendo una cámara", "alt.cat": "Ilustración de un gato",
+      "alt.arc": "Diseño gráfico", "alt.morph": "Ilustraciones que se transforman: moto con cámara, gato, casa del barrio y café", "alt.portrait": "Liseth Vargas sosteniendo una cámara", "alt.cat": "Ilustración de un gato",
       bio: "Como <strong>Alquimista visual,</strong> transformo conceptos abstractos como el Barrio donde crecí, mi amor por el café o la idea de libertad que siento cuando voy en mi moto escuchando una buena canción, en un sistema de texturas, colores y formas que generan algo en aquellos ojos que tienen la intención de ver.",
       tools: "HERRAMIENTAS", foot: "DISEÑO WEB",
       "contact.title": "CONTÁCTAME", "contact.name": "Nombre", "contact.email": "Correo", "contact.msg": "Mensaje", "contact.send": "ENVIAR",
@@ -68,7 +68,7 @@
     en: {
       "nav.home": "HOME", "nav.portfolio": "PORTFOLIO", "nav.contact": "CONTACT",
       "aria.nav": "Main", "aria.lang": "Language", "aria.down": "Scroll down", "aria.prev": "Previous", "aria.next": "Next", "aria.close": "Close", "aria.gallery": "Gallery",
-      "alt.arc": "Graphic design", "alt.moto": "Illustration of a motorcycle and a Minolta camera", "alt.portrait": "Liseth Vargas holding a camera", "alt.cat": "Illustration of a cat",
+      "alt.arc": "Graphic design", "alt.morph": "Illustrations that transform: motorcycle with camera, cat, neighborhood house and coffee", "alt.portrait": "Liseth Vargas holding a camera", "alt.cat": "Illustration of a cat",
       bio: "As a <strong>visual alchemist,</strong> I transform abstract concepts like the neighborhood where I grew up, my love for coffee or the feeling of freedom when I ride my motorcycle listening to a good song, into a system of textures, colors and shapes that spark something in the eyes that intend to see.",
       tools: "TOOLS", foot: "WEB DESIGN",
       "contact.title": "CONTACT ME", "contact.name": "Name", "contact.email": "Email", "contact.msg": "Message", "contact.send": "SEND",
@@ -130,9 +130,23 @@
       s.setAttribute("aria-label", L(CATS[k].name));
     });
     $$(".dot", cats.dots).forEach((d, k) => { d.setAttribute("aria-selected", String(k === catIdx)); d.setAttribute("aria-label", L(CATS[k].name)); });
+    autoplay();
   }
-  $(".v-cats .arrow-prev").addEventListener("click", () => setCat(catIdx - 1));
-  $(".v-cats .arrow-next").addEventListener("click", () => setCat(catIdx + 1));
+
+  /* Las categorías avanzan solas; se pausan con el mouse o el foco encima */
+  const AUTO_MS = 4500;
+  let autoT = 0, autoPaused = false;
+  function autoplay() {
+    clearTimeout(autoT);
+    if (route.name === "portafolio" && !autoPaused && !document.hidden) autoT = setTimeout(() => setCat(catIdx + 1), AUTO_MS);
+  }
+  const vCats = $(".v-cats");
+  const pauseAuto = on => { autoPaused = on; autoplay(); };
+  vCats.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") pauseAuto(true); });
+  vCats.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") pauseAuto(false); });
+  vCats.addEventListener("focusin", () => pauseAuto(true));
+  vCats.addEventListener("focusout", e => { if (!vCats.contains(e.relatedTarget)) pauseAuto(false); });
+  document.addEventListener("visibilitychange", autoplay);
 
   /* ---------- Proyectos ---------- */
   const proj = { cards: $(".proj-cards"), dots: $(".proj-dots"), text: $(".proj-text") };
@@ -173,8 +187,6 @@
     $$(".dot", proj.dots).forEach((d, k) => { d.setAttribute("aria-selected", String(k === idx)); d.setAttribute("aria-label", L(projCat.projects[k].title)); });
     $$(".pt", proj.text).forEach((p, k) => { p.classList.toggle("is-active", k === idx); p.toggleAttribute("inert", k !== idx); });
   }
-  $(".v-proj .arrow-prev").addEventListener("click", () => setProj(projIdx[projCat.id] - 1));
-  $(".v-proj .arrow-next").addEventListener("click", () => setProj(projIdx[projCat.id] + 1));
 
   /* ---------- Sección ---------- */
   const secView = $(".v-sec"), secBody = $(".sec-body"), secBack = $(".sec-back");
@@ -290,7 +302,7 @@
       a.classList.toggle("is-active", on);
       if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
-    if (route.name === "portafolio") setCat(catIdx);
+    if (route.name === "portafolio") setCat(catIdx); else autoplay();
     if (route.name === "categoria") {
       catIdx = CATS.indexOf(route.cat);
       renderProj(route.cat);
@@ -303,6 +315,7 @@
       secBody.innerHTML = "";
     }
     views.forEach(v => { v.hidden = v.dataset.view !== route.name; });
+    if (route.name !== "home") $(".reel-video").pause();
     const cap = s => s.charAt(0) + s.slice(1).toLowerCase();
     const parts = { home: [], contacto: [cap(t("nav.contact"))], portafolio: [cap(t("nav.portfolio"))] };
     const sub = route.name === "categoria" ? [cap(L(route.cat.name))]
@@ -345,7 +358,109 @@
   }
   $$(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
-  const warm = () => CATS.forEach(c => { const i = new Image(); i.src = `${IMG}${c.tex}.webp`; });
+  /* ---------- Reel: la portada se carga al acercarse ---------- */
+  const reel = $(".reel-video");
+  new IntersectionObserver((e, o) => {
+    if (!e[0].isIntersecting) return;
+    reel.poster = reel.dataset.poster;
+    o.disconnect();
+  }, { rootMargin: "600px 0px" }).observe(reel);
+
+  /* ---------- Animación del Home: una ilustración se convierte en otra ---------- */
+  (function morph() {
+    const box = $(".home-morph"), cv = $("canvas", box), ctx = cv.getContext("2d");
+    const NAMES = ["moto", "gato", "casa", "cafe"];
+    // Zona del lienzo que ocupa cada ilustración [x, y, ancho, alto], para no tapar el texto del arco
+    const BOX = { moto: [0, 0, 1, 1], gato: [.13, .2, .74, .8], casa: [.06, .12, .88, .88], cafe: [.12, .2, .76, .8] };
+    const INK = "#3f2a1c";
+    const HOLD = 2600, FLY = 1900, REVEAL = 650;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let imgs = [], pts = [], W = 0, H = 0, dpr = 1, cur = 0, t0 = 0, raf = 0, visible = true, parts = null;
+
+    const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    const load = n => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = `${IMG}morph-${n}.webp`; });
+
+    const draw = i => { const [x, y, w, h] = BOX[NAMES[i]]; ctx.drawImage(imgs[i], x * W, y * H, w * W, h * H); };
+    function sample(img, count, box) {
+      const sw = 400, sh = 225, c = document.createElement("canvas");
+      c.width = sw; c.height = sh;
+      const g = c.getContext("2d", { willReadFrequently: true });
+      g.drawImage(img, 0, 0, sw, sh);
+      const a = g.getImageData(0, 0, sw, sh).data, all = [];
+      for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) if (a[(y * sw + x) * 4 + 3] > 140) all.push([(x + Math.random()) / sw, (y + Math.random()) / sh]);
+      const out = [];
+      for (let i = 0; i < count; i++) {
+        const p = all[(Math.random() * all.length) | 0];
+        out.push([box[0] + p[0] * box[2], box[1] + p[1] * box[3]]);
+      }
+      return out.sort((p, q) => Math.atan2(p[1] - .5, p[0] - .5) - Math.atan2(q[1] - .5, q[0] - .5));
+    }
+    function size() {
+      const r = box.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = Math.round(r.width * dpr); H = Math.round(r.height * dpr);
+      cv.width = W; cv.height = H;
+    }
+    function startFly() {
+      const a = pts[cur], b = pts[(cur + 1) % pts.length];
+      parts = a.map((p, i) => ({ x0: p[0], y0: p[1], x1: b[i][0], y1: b[i][1], d: Math.random() * .25, s: (Math.random() - .5) * .9 }));
+    }
+    function frame(now) {
+      raf = 0;
+      if (!visible) return;
+      const el = now - t0, next = (cur + 1) % imgs.length;
+      ctx.clearRect(0, 0, W, H);
+      if (reduce) {
+        const k = Math.min(1, Math.max(0, (el - HOLD) / 900));
+        ctx.globalAlpha = 1 - k; draw(cur);
+        ctx.globalAlpha = k; draw(next);
+        ctx.globalAlpha = 1;
+        if (el > HOLD + 900) { cur = next; t0 = now; }
+      } else if (el < HOLD) {
+        draw(cur);
+      } else {
+        if (!parts) startFly();
+        const f = (el - HOLD) / FLY;
+        ctx.globalAlpha = Math.max(0, 1 - f * 5);
+        if (ctx.globalAlpha > 0) draw(cur);
+        const rev = Math.min(1, Math.max(0, (el - HOLD - FLY + REVEAL * .4) / REVEAL));
+        ctx.globalAlpha = rev;
+        if (rev > 0) draw(next);
+        ctx.globalAlpha = Math.min(1, f * 6) * (1 - rev);
+        ctx.fillStyle = INK;
+        const sz = Math.max(1.4, 1.5 * dpr);
+        ctx.beginPath();
+        for (const p of parts) {
+          const k = ease(Math.min(1, Math.max(0, (f - p.d) / (1 - .25))));
+          const swirl = Math.sin(k * Math.PI);
+          const cx = p.x0 + (p.x1 - p.x0) * k, cy = p.y0 + (p.y1 - p.y0) * k;
+          const dx = cx - .5, dy = cy - .5;
+          const x = cx + (-dy * p.s - dx * .12) * swirl, y = cy + (dx * p.s - dy * .12) * swirl;
+          ctx.rect(x * W, y * H, sz, sz);
+        }
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        if (el > HOLD + FLY + REVEAL * .6) { cur = next; t0 = now; parts = null; }
+      }
+      raf = requestAnimationFrame(frame);
+    }
+    function play() { if (!raf && visible && imgs.length) raf = requestAnimationFrame(frame); }
+
+    Promise.all(NAMES.map(load)).then(list => {
+      imgs = list;
+      const n = innerWidth < 900 ? 1600 : 2800;
+      pts = imgs.map((im, i) => sample(im, n, BOX[NAMES[i]]));
+      size();
+      box.classList.add("is-live");
+      t0 = performance.now();
+      new IntersectionObserver(e => { visible = e[0].isIntersecting && !document.hidden; if (visible) { t0 = performance.now() - Math.min(performance.now() - t0, HOLD); play(); } }).observe(box);
+      document.addEventListener("visibilitychange", () => { visible = !document.hidden; play(); });
+      new ResizeObserver(size).observe(box);
+      play();
+    }).catch(() => {});
+  })();
+
+  const warm = () =>CATS.forEach(c => { const i = new Image(); i.src = `${IMG}${c.tex}.webp`; });
   window.addEventListener("load", () => (window.requestIdleCallback || setTimeout)(warm, { timeout: 3000 }));
   setLang(lang);
 })();
