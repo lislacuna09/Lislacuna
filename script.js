@@ -56,7 +56,6 @@
     es: {
       "nav.home": "HOME", "nav.portfolio": "PORTAFOLIO", "nav.contact": "CONTACTO",
       "aria.nav": "Principal", "aria.lang": "Idioma", "aria.down": "Bajar", "aria.prev": "Anterior", "aria.next": "Siguiente", "aria.close": "Cerrar", "aria.gallery": "Galería",
-      "alt.arc": "Diseño gráfico", "alt.morph": "Ilustraciones que se transforman: moto con cámara, gato, casa del barrio y café", "alt.portrait": "Liseth Vargas sosteniendo una cámara", "alt.cat": "Ilustración de un gato",
       bio: "Como <strong>Alquimista visual,</strong> transformo conceptos abstractos como el Barrio donde crecí, mi amor por el café o la idea de libertad que siento cuando voy en mi moto escuchando una buena canción, en un sistema de texturas, colores y formas que generan algo en aquellos ojos que tienen la intención de ver.",
       tools: "HERRAMIENTAS", foot: "DISEÑO WEB",
       "contact.title": "CONTÁCTAME", "contact.name": "Nombre", "contact.email": "Correo", "contact.msg": "Mensaje", "contact.send": "ENVIAR",
@@ -68,7 +67,6 @@
     en: {
       "nav.home": "HOME", "nav.portfolio": "PORTFOLIO", "nav.contact": "CONTACT",
       "aria.nav": "Main", "aria.lang": "Language", "aria.down": "Scroll down", "aria.prev": "Previous", "aria.next": "Next", "aria.close": "Close", "aria.gallery": "Gallery",
-      "alt.arc": "Graphic design", "alt.morph": "Illustrations that transform: motorcycle with camera, cat, neighborhood house and coffee", "alt.portrait": "Liseth Vargas holding a camera", "alt.cat": "Illustration of a cat",
       bio: "As a <strong>visual alchemist,</strong> I transform abstract concepts like the neighborhood where I grew up, my love for coffee or the feeling of freedom when I ride my motorcycle listening to a good song, into a system of textures, colors and shapes that spark something in the eyes that intend to see.",
       tools: "TOOLS", foot: "WEB DESIGN",
       "contact.title": "CONTACT ME", "contact.name": "Name", "contact.email": "Email", "contact.msg": "Message", "contact.send": "SEND",
@@ -176,6 +174,17 @@
     });
     setProj(projIdx[cat.id] || 0);
   }
+  // Achica los títulos largos (p. ej. ARQUITECTÓNICA, PHOTOGRAPHY) para que no se salgan de su columna
+  function fitTitles() {
+    if (!proj.text.clientWidth) return;
+    $$(".pt-title, .pt-sub", proj.text).forEach(h => {
+      h.style.fontSize = "";
+      const w = h.scrollWidth, box = h.clientWidth;
+      if (w > box) h.style.fontSize = `${parseFloat(getComputedStyle(h).fontSize) * box / w * 0.98}px`;
+    });
+  }
+  window.addEventListener("resize", () => { if (route.name === "categoria") fitTitles(); });
+
   function setProj(i) {
     const n = projCat.projects.length;
     const idx = (i + n) % n;
@@ -186,6 +195,7 @@
     });
     $$(".dot", proj.dots).forEach((d, k) => { d.setAttribute("aria-selected", String(k === idx)); d.setAttribute("aria-label", L(projCat.projects[k].title)); });
     $$(".pt", proj.text).forEach((p, k) => { p.classList.toggle("is-active", k === idx); p.toggleAttribute("inert", k !== idx); });
+    fitTitles();
   }
 
   /* ---------- Sección ---------- */
@@ -316,6 +326,7 @@
     }
     views.forEach(v => { v.hidden = v.dataset.view !== route.name; });
     if (route.name !== "home") $(".reel-video").pause();
+    if (route.name === "categoria") { fitTitles(); document.fonts.ready.then(fitTitles); }
     const cap = s => s.charAt(0) + s.slice(1).toLowerCase();
     const parts = { home: [], contacto: [cap(t("nav.contact"))], portafolio: [cap(t("nav.portfolio"))] };
     const sub = route.name === "categoria" ? [cap(L(route.cat.name))]
@@ -370,8 +381,8 @@
   (function morph() {
     const box = $(".home-morph"), cv = $("canvas", box), ctx = cv.getContext("2d");
     const NAMES = ["moto", "gato", "casa", "cafe"];
-    // Zona del lienzo que ocupa cada ilustración [x, y, ancho, alto], para no tapar el texto del arco
-    const BOX = { moto: [0, 0, 1, 1], gato: [.13, .2, .74, .8], casa: [.06, .12, .88, .88], cafe: [.12, .2, .76, .8] };
+    // Zona del lienzo que ocupa cada ilustración [x, y, ancho, alto]
+    const BOX = { moto: [0, 0, 1, 1], gato: [0, 0, 1, 1], casa: [0, 0, 1, 1], cafe: [0, 0, 1, 1] };
     const INK = "#3f2a1c";
     const HOLD = 2600, FLY = 1900, REVEAL = 650;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
