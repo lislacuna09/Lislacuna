@@ -18,10 +18,6 @@
                   en: "An academic project: a magazine that merges two completely different fields, Law and Environmental care." },
           credit: { es: "Proyecto individual.", en: "Individual project." },
           section: { type: "flip", book: "lexeco", pages: 16, w: 1000, h: 1414 } },
-        { id: "ekos", img: "ekos-portada", sub: { es: "REVISTA", en: "MAGAZINE" }, title: { es: "EKOS", en: "EKOS" },
-          desc: { es: "Revista de medio ambiente con buenas noticias sobre la lucha contra el cambio climático.",
-                  en: "An environmental magazine with good news about the fight against climate change." },
-          section: { type: "flip", book: "ekos", pages: 4, w: 1000, h: 1303 } },
         { id: "afiches", img: "proy-afiches", sub: { es: "DISEÑO", en: "POSTER" }, title: { es: "AFICHES", en: "DESIGN" },
           desc: { es: "Son proyectos realizados como ejercicios académicos.", en: "Projects made as academic exercises." },
           credit: { es: "Proyectos grupales.", en: "Group projects." },
@@ -158,7 +154,6 @@
     projCat = cat;
     $(".proj-h1").textContent = `${t("nav.portfolio")}: ${L(cat.name)}`;
     proj.cards.innerHTML = ""; proj.dots.innerHTML = ""; proj.text.innerHTML = "";
-    proj.cards.dataset.n = cat.projects.length;
     cat.projects.forEach((p, i) => {
       const card = el("button", { type: "button", class: "card", "data-i": i });
       card.innerHTML = `<img src="${IMG}${p.img}.webp" width="820" height="1186" decoding="async" alt="" draggable="false" />`;
