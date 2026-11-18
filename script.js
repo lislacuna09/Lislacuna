@@ -12,12 +12,16 @@
           desc: { es: "Es un proyecto realizado como ejercicio académico, en donde se diseñó un cómic y todo un universo gráfico que lo acompaña.",
                   en: "An academic project in which I designed a comic and the whole graphic universe around it." },
           credit: { es: "Proyecto grupal.", en: "Group project." },
-          section: { type: "slide", src: "sec-comic" } },
+          section: { type: "flip", book: "comic", pages: 20, w: 1000, h: 1529 } },
         { id: "lexeco", img: "proy-lexeco", sub: { es: "REVISTA", en: "MAGAZINE" }, title: { es: "LEXECO", en: "LEXECO" },
           desc: { es: "Es un proyecto realizado como ejercicio académico, se propuso una revista que fusionara dos campos completamente distintos: Derecho y Cuidado ambiental.",
                   en: "An academic project: a magazine that merges two completely different fields, Law and Environmental care." },
           credit: { es: "Proyecto individual.", en: "Individual project." },
-          section: { type: "video", src: "assets/video/lexeco.mp4", poster: "sec-lexeco" } },
+          section: { type: "flip", book: "lexeco", pages: 16, w: 1000, h: 1414 } },
+        { id: "ekos", img: "ekos-portada", sub: { es: "REVISTA", en: "MAGAZINE" }, title: { es: "EKOS", en: "EKOS" },
+          desc: { es: "Revista de medio ambiente con buenas noticias sobre la lucha contra el cambio climático.",
+                  en: "An environmental magazine with good news about the fight against climate change." },
+          section: { type: "flip", book: "ekos", pages: 4, w: 1000, h: 1303 } },
         { id: "afiches", img: "proy-afiches", sub: { es: "DISEÑO", en: "POSTER" }, title: { es: "AFICHES", en: "DESIGN" },
           desc: { es: "Son proyectos realizados como ejercicios académicos.", en: "Projects made as academic exercises." },
           credit: { es: "Proyectos grupales.", en: "Group projects." },
@@ -62,7 +66,7 @@
       "contact.leave": "Deja tu mensaje", "contact.follow": "Sígueme en",
       "contact.missing": "Completa todos los campos con un correo válido.", "contact.opening": "Abriendo tu aplicación de correo…",
       "contact.subject": "Mensaje desde el portafolio", "contact.from": "De",
-      view: "VER PROYECTO", back: "VOLVER", photos: "FOTOS", open: "Ver en tamaño completo"
+      view: "VER PROYECTO", back: "Volver", open: "Ampliar", "flip.role": "revista", "flip.page": "página", "deck.role": "carrusel de fotos"
     },
     en: {
       "nav.home": "HOME", "nav.portfolio": "PORTFOLIO", "nav.contact": "CONTACT",
@@ -73,7 +77,7 @@
       "contact.leave": "Leave me a message", "contact.follow": "Follow me on",
       "contact.missing": "Please fill in every field with a valid email.", "contact.opening": "Opening your email app…",
       "contact.subject": "Message from the portfolio", "contact.from": "From",
-      view: "VIEW PROJECT", back: "BACK", photos: "PHOTOS", open: "View full size"
+      view: "VIEW PROJECT", back: "Back", open: "Enlarge", "flip.role": "magazine", "flip.page": "page", "deck.role": "photo carousel"
     }
   };
 
@@ -132,7 +136,7 @@
   }
 
   /* Las categorías avanzan solas; se pausan con el mouse o el foco encima */
-  const AUTO_MS = 4500;
+  const AUTO_MS = 2000;
   let autoT = 0, autoPaused = false;
   function autoplay() {
     clearTimeout(autoT);
@@ -154,6 +158,7 @@
     projCat = cat;
     $(".proj-h1").textContent = `${t("nav.portfolio")}: ${L(cat.name)}`;
     proj.cards.innerHTML = ""; proj.dots.innerHTML = ""; proj.text.innerHTML = "";
+    proj.cards.dataset.n = cat.projects.length;
     cat.projects.forEach((p, i) => {
       const card = el("button", { type: "button", class: "card", "data-i": i });
       card.innerHTML = `<img src="${IMG}${p.img}.webp" width="820" height="1186" decoding="async" alt="" draggable="false" />`;
@@ -169,7 +174,7 @@
       const desc = p.desc ? `<p class="pt-desc">${esc(L(p.desc))}</p>` : "";
       proj.text.append(el("div", { class: "pt" },
         `<p class="pt-sub">${esc(L(p.sub))}</p><h2 class="pt-title">${esc(L(p.title))}</h2>${desc}` +
-        `<p class="pt-credit">${esc(L(p.credit))}</p>` +
+        (p.credit ? `<p class="pt-credit">${esc(L(p.credit))}</p>` : "") +
         `<a class="pt-cta" href="#portafolio/${cat.id}/${p.id}">${t("view")} <span aria-hidden="true">→</span></a>`));
     });
     setProj(projIdx[cat.id] || 0);
@@ -205,27 +210,135 @@
   function renderSec(cat, p) {
     secView.style.backgroundImage = `url(${IMG}${cat.tex}.webp)`;
     secBack.href = `#portafolio/${cat.id}`;
-    $("span", secBack).textContent = `${t("back")} · ${L(cat.name)}`;
+    secBack.setAttribute("aria-label", `${t("back")}: ${L(cat.name)}`);
+    stopSection();
     secBody.className = "sec-body";
     const s = p.section;
     const label = `${L(p.sub)} ${L(p.title)}`;
+    secBody.innerHTML = `<h1 class="sr">${esc(label)}</h1>`;
     if (s.type === "slide") {
-      secBody.innerHTML = `<h1 class="sr">${esc(label)}</h1>` +
-        `<img class="sec-media" src="${IMG}${s.src}.webp" srcset="${IMG}${s.src}-1280.webp 1280w, ${IMG}${s.src}.webp 2560w" sizes="(min-width: 900px) 88vw, 100vw" width="2560" height="1440" decoding="async" alt="${esc(label)}" />` +
-        `<a class="sec-zoom" href="${IMG}${s.src}.webp" target="_blank" rel="noopener">${t("open")} ↗</a>`;
-    } else if (s.type === "video") {
-      secBody.innerHTML = `<h1 class="sr">${esc(label)}</h1>` +
-        `<video class="sec-media" src="${s.src}" poster="${IMG}${s.poster}-1280.webp" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="${esc(label)}"></video>`;
+      galList = [{ src: `${IMG}${s.src}.webp`, set: `${IMG}${s.src}-1280.webp 1280w, ${IMG}${s.src}.webp 2560w` }];
+      secBody.insertAdjacentHTML("beforeend", `<button type="button" class="sec-zoom-btn" aria-label="${esc(t("open"))}: ${esc(label)}">` +
+        `<img class="sec-media" src="${IMG}${s.src}.webp" srcset="${galList[0].set}" sizes="(min-width: 900px) 88vw, 100vw" width="2560" height="1440" decoding="async" alt="${esc(label)}" /></button>`);
+      $(".sec-zoom-btn", secBody).addEventListener("click", () => openLb(0));
+    } else if (s.type === "flip") {
+      secBody.classList.add("is-flip");
+      flipbook(s, label);
     } else {
-      secBody.classList.add("is-gal");
+      secBody.classList.add("is-deck");
       const sizes = (window.GALERIAS || {})[s.key] || [];
-      galList = sizes.map((_, i) => `assets/galeria/${s.key}/${String(i + 1).padStart(2, "0")}`);
-      secBody.innerHTML = `<header class="gal-head"><div><p>${esc(L(p.sub))}</p><h1>${esc(L(p.title))}</h1></div><p>${sizes.length} ${t("photos")}</p></header>` +
-        `<div class="gal">${sizes.map(([w, h], i) =>
-          `<button type="button" data-i="${i}" aria-label="${esc(label)} ${i + 1}"><img src="${galList[i]}-t.webp" width="${w}" height="${h}" loading="${i < 8 ? "eager" : "lazy"}" decoding="async" alt="" /></button>`).join("")}</div>`;
-      $$(".gal button", secBody).forEach(b => b.addEventListener("click", () => openLb(+b.dataset.i)));
+      galList = sizes.map((_, i) => {
+        const b = `assets/galeria/${s.key}/${String(i + 1).padStart(2, "0")}`;
+        return { src: `${b}.webp`, set: `${b}-1200.webp 1200w, ${b}.webp 2000w`, thumb: `${b}-t.webp` };
+      });
+      deck(label);
     }
   }
+
+  /* ---------- Flipbook (revistas que se hojean) ---------- */
+  let flipInst = null, deckStop = null;
+  function stopSection() {
+    if (flipInst) { try { flipInst.destroy(); } catch (e) {} flipInst = null; }
+    if (deckStop) { deckStop(); deckStop = null; }
+  }
+  let flipLib = null;
+  const loadFlipLib = () => flipLib || (flipLib = new Promise((ok, ko) => {
+    const sc = document.createElement("script");
+    sc.src = "https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js";
+    sc.onload = () => ok(window.St);
+    sc.onerror = () => { flipLib = null; ko(new Error("page-flip")); };
+    document.head.append(sc);
+  }));
+  function flipbook(s, label) {
+    const pages = Array.from({ length: s.pages }, (_, i) => `assets/flip/${s.book}/${String(i + 1).padStart(2, "0")}.webp`);
+    secBody.insertAdjacentHTML("beforeend",
+      `<div class="flip-stage" style="--r:${(s.w / s.h).toFixed(4)}"><div class="flip-book" role="region" aria-roledescription="${t("flip.role")}" aria-label="${esc(label)}">` +
+      pages.map((src, i) => `<div class="flip-page" data-density="${i === 0 || i === pages.length - 1 ? "hard" : "soft"}"><img src="${src}" alt="${esc(label)} · ${t("flip.page")} ${i + 1}" ${i > 3 ? 'loading="lazy"' : ""} decoding="async" /></div>`).join("") +
+      `</div></div><div class="dots flip-bar"><span class="flip-knob"></span></div><p class="sr" aria-live="polite" id="flip-status"></p>`);
+    const bookEl = $(".flip-book", secBody), bar = $(".flip-bar", secBody), knob = $(".flip-knob", secBody), status = $("#flip-status", secBody);
+    const update = i => {
+      const n = pages.length, k = n > 1 ? i / (n - 1) : 0;
+      knob.style.left = `${k * 100}%`;
+      status.textContent = `${t("flip.page")} ${i + 1} / ${n}`;
+      $$(".flip-page img", bookEl).slice(i, i + 4).forEach(im => { im.loading = "eager"; });
+    };
+    bar.addEventListener("click", e => {
+      if (!flipInst) return;
+      const r = bar.getBoundingClientRect();
+      flipInst.flip(Math.round(((e.clientX - r.left) / r.width) * (pages.length - 1)));
+    });
+    loadFlipLib().then(St => {
+      if (!bookEl.isConnected) return;
+      flipInst = new St.PageFlip(bookEl, {
+        width: s.w, height: s.h, size: "stretch",
+        minWidth: 180, maxWidth: s.w, minHeight: 180 * s.h / s.w, maxHeight: s.h,
+        showCover: true, usePortrait: true, mobileScrollSupport: true,
+        maxShadowOpacity: 0.45, flippingTime: 800, autoSize: true
+      });
+      flipInst.loadFromHTML($$(".flip-page", bookEl));
+      flipInst.on("flip", e => update(e.data));
+      update(0);
+      secBody.classList.add("flip-ready");
+    }).catch(() => {
+      secBody.classList.add("flip-fallback");
+      update(0);
+    });
+  }
+
+  /* ---------- Mazo de fotos que se van pasando ---------- */
+  function deck(label) {
+    const n = galList.length, VISIBLE = 6;
+    secBody.insertAdjacentHTML("beforeend", `<div class="deck" role="region" aria-roledescription="${t("deck.role")}" aria-label="${esc(label)}">` +
+      galList.map((g, i) => `<button type="button" class="deck-card" data-i="${i}" aria-label="${esc(label)} ${i + 1} / ${n} · ${t("open")}" tabindex="-1"><img src="${g.thumb}" alt="" decoding="async" ${i > VISIBLE ? 'loading="lazy"' : ""} /></button>`).join("") +
+      `</div><div class="dots deck-bar"><span class="flip-knob"></span></div>`);
+    const deckEl = $(".deck", secBody), cards = $$(".deck-card", deckEl), knob = $(".deck-bar .flip-knob", secBody);
+    let cur = 0, timer = 0, paused = false;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function layout(leaving) {
+      cards.forEach((c, i) => {
+        const k = (i - cur + n) % n;
+        c.style.setProperty("--k", Math.min(k, VISIBLE));
+        c.classList.toggle("is-front", k === 0);
+        c.classList.toggle("is-hidden", k >= VISIBLE);
+        c.classList.toggle("is-leaving", i === leaving);
+        c.tabIndex = k === 0 ? 0 : -1;
+        c.setAttribute("aria-hidden", String(k !== 0));
+        if (k < VISIBLE + 1) { const im = c.firstElementChild; if (im.loading === "lazy") im.loading = "eager"; }
+      });
+      knob.style.left = `${n > 1 ? (cur / (n - 1)) * 100 : 0}%`;
+    }
+    function go(to) {
+      const prev = cur;
+      cur = (to + n) % n;
+      layout(cur === (prev + 1) % n ? prev : -1);
+      schedule();
+    }
+    function schedule() {
+      clearTimeout(timer);
+      if (!paused && !reduce && !document.hidden) timer = setTimeout(() => (lb.hidden ? go(cur + 1) : schedule()), 2600);
+    }
+    cards.forEach((c, i) => c.addEventListener("click", () => {
+      if (swallowClick) return;
+      if (i === cur) openLb(i); else go(i);
+    }));
+    $(".deck-bar", secBody).addEventListener("click", e => {
+      const r = e.currentTarget.getBoundingClientRect();
+      go(Math.round(((e.clientX - r.left) / r.width) * (n - 1)));
+    });
+    swipe(deckEl, () => go(cur + 1), () => go(cur - 1));
+    const pause = on => { paused = on; schedule(); };
+    deckEl.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") pause(true); });
+    deckEl.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") pause(false); });
+    deckEl.addEventListener("focusin", () => pause(true));
+    deckEl.addEventListener("focusout", () => pause(false));
+    const onVis = () => schedule();
+    document.addEventListener("visibilitychange", onVis);
+    deckGo = d => go(cur + d);
+    layout(-1);
+    schedule();
+    deckStop = () => { clearTimeout(timer); document.removeEventListener("visibilitychange", onVis); deckGo = null; };
+  }
+  let deckGo = null;
 
   /* ---------- Lightbox ---------- */
   const lb = $(".lightbox"), lbImg = $(".lb-img"), lbCount = $(".lb-count");
@@ -233,16 +346,17 @@
   function openLb(i) { lbReturn = document.activeElement; lb.hidden = false; showLb(i); $(".lb-close").focus(); document.body.style.overflow = "hidden"; }
   function showLb(i) {
     lbIdx = (i + galList.length) % galList.length;
-    lbImg.srcset = lbSet(galList[lbIdx]);
-    lbImg.src = `${galList[lbIdx]}.webp`;
-    lbCount.textContent = `${lbIdx + 1} / ${galList.length}`;
-    [lbIdx + 1, lbIdx - 1].forEach(k => {
+    const it = galList[lbIdx];
+    lbImg.srcset = it.set;
+    lbImg.src = it.src;
+    lbCount.textContent = galList.length > 1 ? `${lbIdx + 1} / ${galList.length}` : "";
+    lb.classList.toggle("is-single", galList.length < 2);
+    if (galList.length > 1) [lbIdx + 1, lbIdx - 1].forEach(k => {
       const im = new Image();
       im.sizes = lbImg.sizes;
-      im.srcset = lbSet(galList[(k + galList.length) % galList.length]);
+      im.srcset = galList[(k + galList.length) % galList.length].set;
     });
   }
-  const lbSet = base => `${base}-1200.webp 1200w, ${base}.webp 2000w`;
   lbImg.sizes = "(min-width: 900px) 90vw, 100vw";
   lb.addEventListener("keydown", e => {
     if (e.key !== "Tab") return;
@@ -285,6 +399,7 @@
     if (!d) return;
     if (route.name === "portafolio") setCat(catIdx + d);
     if (route.name === "categoria") setProj(projIdx[projCat.id] + d);
+    if (route.name === "seccion") { if (flipInst) (d < 0 ? flipInst.flipPrev() : flipInst.flipNext()); else if (deckGo) deckGo(d); }
   });
 
   /* ---------- Rutas ---------- */
@@ -322,6 +437,7 @@
       projIdx[route.cat.id] = route.cat.projects.indexOf(route.p);
       renderSec(route.cat, route.p);
     } else {
+      stopSection();
       secBody.innerHTML = "";
     }
     views.forEach(v => { v.hidden = v.dataset.view !== route.name; });
