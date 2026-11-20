@@ -21,7 +21,7 @@
         { id: "afiches", img: "proy-afiches", sub: { es: "DISEÑO", en: "POSTER" }, title: { es: "AFICHES", en: "DESIGN" },
           desc: { es: "Son proyectos realizados como ejercicios académicos.", en: "Projects made as academic exercises." },
           credit: { es: "Proyectos grupales.", en: "Group projects." },
-          section: { type: "slide", src: "sec-afiches" } }
+          section: { type: "stack", items: ["a01", "a02", "a03:v", "a04", "a05:v", "a06", "a07:v", "a08"] } }
       ]
     },
     {
@@ -34,7 +34,7 @@
         { id: "digital", img: "proy-digital", sub: { es: "ILUSTRACIÓN", en: "DIGITAL" }, title: { es: "DIGITAL", en: "ILLUSTRATION" },
           credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "slide", src: "sec-digital" } },
         { id: "moda", img: "proy-moda", sub: { es: "ILUSTRACIÓN PARA", en: "ILLUSTRATION FOR" }, title: { es: "LA MODA", en: "FASHION" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "slide", src: "sec-moda" } }
+          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "flip", book: "moda", pages: 15, w: 1600, h: 900, single: true } }
       ]
     },
     {
@@ -43,11 +43,11 @@
       cover: "cat-fotografia-b",
       projects: [
         { id: "producto", img: "proy-producto", sub: { es: "FOTOGRAFÍA DE", en: "PRODUCT" }, title: { es: "PRODUCTO", en: "PHOTOGRAPHY" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "producto" } },
+          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "producto", shutter: true } },
         { id: "arquitectura", img: "proy-arquitectura", sub: { es: "FOTOGRAFÍA", en: "ARCHITECTURAL" }, title: { es: "ARQUITECTÓNICA", en: "PHOTOGRAPHY" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "arquitectura" } },
+          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "arquitectura", shutter: true } },
         { id: "modelos", img: "proy-modelos", sub: { es: "FOTOGRAFÍA DE", en: "MODEL" }, title: { es: "MODELOS", en: "PHOTOGRAPHY" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "modelos" } }
+          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "modelos", shutter: true } }
       ]
     }
   ];
@@ -60,8 +60,9 @@
       tools: "HERRAMIENTAS", foot: "DISEÑO WEB",
       "contact.title": "CONTÁCTAME", "contact.name": "Nombre", "contact.email": "Correo", "contact.msg": "Mensaje", "contact.send": "ENVIAR",
       "contact.leave": "Deja tu mensaje", "contact.follow": "Sígueme en",
-      "contact.missing": "Completa todos los campos con un correo válido.", "contact.opening": "Abriendo tu aplicación de correo…",
-      "contact.subject": "Mensaje desde el portafolio", "contact.from": "De",
+      "contact.missing": "Completa todos los campos con un correo válido.", "contact.sending": "Enviando…", "contact.sent": "¡Gracias! Tu mensaje fue enviado.",
+      "contact.error": "No se pudo enviar. Escríbeme a <a href=\"mailto:lislacuna09@gmail.com\">lislacuna09@gmail.com</a>.", "contact.behance": "Mi portafolio en",
+      "contact.subject": "Mensaje desde el portafolio",
       view: "VER PROYECTO", back: "Volver", open: "Ampliar", "flip.role": "revista", "flip.page": "página", "deck.role": "carrusel de fotos"
     },
     en: {
@@ -71,8 +72,9 @@
       tools: "TOOLS", foot: "WEB DESIGN",
       "contact.title": "CONTACT ME", "contact.name": "Name", "contact.email": "Email", "contact.msg": "Message", "contact.send": "SEND",
       "contact.leave": "Leave me a message", "contact.follow": "Follow me on",
-      "contact.missing": "Please fill in every field with a valid email.", "contact.opening": "Opening your email app…",
-      "contact.subject": "Message from the portfolio", "contact.from": "From",
+      "contact.missing": "Please fill in every field with a valid email.", "contact.sending": "Sending…", "contact.sent": "Thank you! Your message was sent.",
+      "contact.error": "It could not be sent. Write to me at <a href=\"mailto:lislacuna09@gmail.com\">lislacuna09@gmail.com</a>.", "contact.behance": "My portfolio on",
+      "contact.subject": "Message from the portfolio",
       view: "VIEW PROJECT", back: "Back", open: "Enlarge", "flip.role": "magazine", "flip.page": "page", "deck.role": "photo carousel"
     }
   };
@@ -198,6 +200,54 @@
     fitTitles();
   }
 
+  /* ---------- Sonidos (obturador y hoja de papel) ---------- */
+  // Los navegadores solo permiten sonido después de que la persona toca o hace clic en la página.
+  const sfx = (() => {
+    let ac = null, shutterP = null;
+    const ctx = () => {
+      if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; ac = new C(); }
+      if (ac.state === "suspended") ac.resume();
+      return ac;
+    };
+    ["pointerdown", "keydown", "touchstart"].forEach(ev => window.addEventListener(ev, ctx, { passive: true }));
+    const ready = () => ac && ac.state === "running";
+    const loadShutter = () => shutterP || (shutterP = fetch("assets/audio/obturador.mp3")
+      .then(r => r.arrayBuffer())
+      .then(b => new Promise((ok, ko) => ac.decodeAudioData(b, ok, ko)))
+      .catch(e => { shutterP = null; throw e; }));
+    function shutter() {
+      if (!ready()) return;
+      loadShutter().then(buf => {
+        const src = ac.createBufferSource(), g = ac.createGain(), t0 = ac.currentTime;
+        src.buffer = buf;
+        g.gain.setValueAtTime(.85, t0);
+        g.gain.setValueAtTime(.85, t0 + .85);
+        g.gain.linearRampToValueAtTime(0, t0 + 1);
+        src.connect(g).connect(ac.destination);
+        src.start(t0, 0, 1);
+      }).catch(() => {});
+    }
+    function page() {
+      if (!ready()) return;
+      const dur = .42, n = Math.floor(ac.sampleRate * dur), buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) {
+        const t = i / n;
+        const env = Math.pow(Math.sin(Math.PI * Math.min(1, t * 1.15)), 1.6) * (1 - t * .55);
+        d[i] = (Math.random() * 2 - 1) * env * (.5 + .5 * Math.sin(t * 40 + Math.sin(t * 9) * 3));
+      }
+      const src = ac.createBufferSource(), hp = ac.createBiquadFilter(), bp = ac.createBiquadFilter(), g = ac.createGain(), t0 = ac.currentTime;
+      src.buffer = buf;
+      hp.type = "highpass"; hp.frequency.value = 450;
+      bp.type = "bandpass"; bp.Q.value = .7;
+      bp.frequency.setValueAtTime(1600, t0);
+      bp.frequency.linearRampToValueAtTime(3600, t0 + dur);
+      g.gain.value = .32;
+      src.connect(hp).connect(bp).connect(g).connect(ac.destination);
+      src.start(t0);
+    }
+    return { shutter, page, preload: () => { if (ac) loadShutter().catch(() => {}); } };
+  })();
+
   /* ---------- Sección ---------- */
   const secView = $(".v-sec"), secBody = $(".sec-body"), secBack = $(".sec-back");
   let galList = [];
@@ -221,12 +271,19 @@
       flipbook(s, label);
     } else {
       secBody.classList.add("is-deck");
-      const sizes = (window.GALERIAS || {})[s.key] || [];
-      galList = sizes.map((_, i) => {
-        const b = `assets/galeria/${s.key}/${String(i + 1).padStart(2, "0")}`;
-        return { src: `${b}.webp`, set: `${b}-1200.webp 1200w, ${b}.webp 2000w`, thumb: `${b}-t.webp` };
-      });
-      deck(label);
+      if (s.type === "stack") {
+        galList = s.items.map(id => {
+          const [name, kind] = id.split(":"), b = `assets/afiches/${name}`;
+          return kind === "v" ? { video: `${b}.mp4`, thumb: `${b}-t.webp` } : { src: `${b}.webp`, set: "", thumb: `${b}-t.webp` };
+        });
+      } else {
+        const sizes = (window.GALERIAS || {})[s.key] || [];
+        galList = sizes.map((_, i) => {
+          const b = `assets/galeria/${s.key}/${String(i + 1).padStart(2, "0")}`;
+          return { src: `${b}.webp`, set: `${b}-1200.webp 1200w, ${b}.webp 2000w`, thumb: `${b}-t.webp` };
+        });
+      }
+      deck(label, !!s.shutter);
     }
   }
 
@@ -247,7 +304,7 @@
   function flipbook(s, label) {
     const pages = Array.from({ length: s.pages }, (_, i) => `assets/flip/${s.book}/${String(i + 1).padStart(2, "0")}.webp`);
     secBody.insertAdjacentHTML("beforeend",
-      `<div class="flip-stage" style="--r:${(s.w / s.h).toFixed(4)}"><div class="flip-book" role="region" aria-roledescription="${t("flip.role")}" aria-label="${esc(label)}">` +
+      `<div class="flip-stage${s.single ? " is-single" : ""}" style="--r:${(s.w / s.h).toFixed(4)}"><div class="flip-book" role="region" aria-roledescription="${t("flip.role")}" aria-label="${esc(label)}">` +
       pages.map((src, i) => `<div class="flip-page" data-density="${i === 0 || i === pages.length - 1 ? "hard" : "soft"}"><img src="${src}" alt="${esc(label)} · ${t("flip.page")} ${i + 1}" ${i > 3 ? 'loading="lazy"' : ""} decoding="async" /></div>`).join("") +
       `</div></div><div class="dots flip-bar"><span class="flip-knob"></span></div><p class="sr" aria-live="polite" id="flip-status"></p>`);
     const bookEl = $(".flip-book", secBody), bar = $(".flip-bar", secBody), knob = $(".flip-knob", secBody), status = $("#flip-status", secBody);
@@ -264,14 +321,17 @@
     });
     loadFlipLib().then(St => {
       if (!bookEl.isConnected) return;
+      // Láminas horizontales: el ancho mínimo de página impide que quepan dos, así se ve una a la vez
+      const minW = s.single ? Math.ceil(bookEl.clientWidth * .55) : 180;
       flipInst = new St.PageFlip(bookEl, {
         width: s.w, height: s.h, size: "stretch",
-        minWidth: 180, maxWidth: s.w, minHeight: 180 * s.h / s.w, maxHeight: s.h,
-        showCover: true, usePortrait: true, mobileScrollSupport: true,
+        minWidth: minW, maxWidth: s.w, minHeight: minW * s.h / s.w, maxHeight: s.h,
+        showCover: !s.single, usePortrait: true, mobileScrollSupport: true,
         maxShadowOpacity: 0.45, flippingTime: 800, autoSize: true
       });
       flipInst.loadFromHTML($$(".flip-page", bookEl));
       flipInst.on("flip", e => update(e.data));
+      flipInst.on("changeState", e => { if (e.data === "flipping") sfx.page(); });
       update(0);
       secBody.classList.add("flip-ready");
     }).catch(() => {
@@ -281,9 +341,10 @@
   }
 
   /* ---------- Mazo de fotos que se van pasando ---------- */
-  function deck(label) {
-    const n = galList.length, VISIBLE = 6;
-    secBody.insertAdjacentHTML("beforeend", `<div class="deck" role="region" aria-roledescription="${t("deck.role")}" aria-label="${esc(label)}">` +
+  function deck(label, shutter) {
+    const n = galList.length, VISIBLE = 5;
+    if (shutter) sfx.preload();
+    secBody.insertAdjacentHTML("beforeend", `<div class="deck"${galList.some(g => g.video) ? ` style="--ar:.7"` : ""} role="region" aria-roledescription="${t("deck.role")}" aria-label="${esc(label)}">` +
       galList.map((g, i) => `<button type="button" class="deck-card" data-i="${i}" aria-label="${esc(label)} ${i + 1} / ${n} · ${t("open")}" tabindex="-1"><img src="${g.thumb}" alt="" decoding="async" ${i > VISIBLE ? 'loading="lazy"' : ""} /></button>`).join("") +
       `</div><div class="dots deck-bar"><span class="flip-knob"></span></div>`);
     const deckEl = $(".deck", secBody), cards = $$(".deck-card", deckEl), knob = $(".deck-bar .flip-knob", secBody);
@@ -299,18 +360,28 @@
         c.tabIndex = k === 0 ? 0 : -1;
         c.setAttribute("aria-hidden", String(k !== 0));
         if (k < VISIBLE + 1) { const im = c.firstElementChild; if (im.loading === "lazy") im.loading = "eager"; }
+        // los afiches animados se reproducen (sin sonido) solo cuando están al frente
+        const g = galList[i];
+        if (g.video) {
+          let v = $("video", c);
+          if (k === 0) {
+            if (!v) { v = el("video", { muted: "", loop: "", playsinline: "", preload: "auto", src: g.video, "aria-hidden": "true" }); v.muted = true; c.append(v); }
+            v.play().catch(() => {});
+          } else if (v) v.pause();
+        }
       });
       knob.style.left = `${n > 1 ? (cur / (n - 1)) * 100 : 0}%`;
     }
     function go(to) {
       const prev = cur;
       cur = (to + n) % n;
+      if (shutter && cur !== prev) sfx.shutter();
       layout(cur === (prev + 1) % n ? prev : -1);
       schedule();
     }
     function schedule() {
       clearTimeout(timer);
-      if (!paused && !reduce && !document.hidden) timer = setTimeout(() => (lb.hidden ? go(cur + 1) : schedule()), 2600);
+      if (!paused && !reduce && !document.hidden) timer = setTimeout(() => (lb.hidden ? go(cur + 1) : schedule()), 2200);
     }
     cards.forEach((c, i) => c.addEventListener("click", () => {
       if (swallowClick) return;
@@ -331,25 +402,35 @@
     deckGo = d => go(cur + d);
     layout(-1);
     schedule();
-    deckStop = () => { clearTimeout(timer); document.removeEventListener("visibilitychange", onVis); deckGo = null; };
+    deckStop = () => { clearTimeout(timer); document.removeEventListener("visibilitychange", onVis); $$("video", deckEl).forEach(v => v.pause()); deckGo = null; };
   }
   let deckGo = null;
 
   /* ---------- Lightbox ---------- */
-  const lb = $(".lightbox"), lbImg = $(".lb-img"), lbCount = $(".lb-count");
+  const lb = $(".lightbox"), lbImg = $(".lb-img"), lbVideo = $(".lb-video"), lbCount = $(".lb-count");
   let lbIdx = 0, lbReturn = null;
   function openLb(i) { lbReturn = document.activeElement; lb.hidden = false; showLb(i); $(".lb-close").focus(); document.body.style.overflow = "hidden"; }
   function showLb(i) {
     lbIdx = (i + galList.length) % galList.length;
     const it = galList[lbIdx];
-    lbImg.srcset = it.set;
-    lbImg.src = it.src;
+    lbImg.hidden = !!it.video;
+    lbVideo.hidden = !it.video;
+    if (it.video) {
+      lbImg.removeAttribute("src"); lbImg.removeAttribute("srcset");
+      lbVideo.src = it.video; lbVideo.poster = it.thumb;
+      lbVideo.play().catch(() => {});
+    } else {
+      lbVideo.pause(); lbVideo.removeAttribute("src");
+      lbImg.srcset = it.set;
+      lbImg.src = it.src;
+    }
     lbCount.textContent = galList.length > 1 ? `${lbIdx + 1} / ${galList.length}` : "";
     lb.classList.toggle("is-single", galList.length < 2);
     if (galList.length > 1) [lbIdx + 1, lbIdx - 1].forEach(k => {
       const im = new Image();
       im.sizes = lbImg.sizes;
-      im.srcset = galList[(k + galList.length) % galList.length].set;
+      const nx = galList[(k + galList.length) % galList.length];
+      if (nx.set) im.srcset = nx.set; else if (nx.src) im.src = nx.src;
     });
   }
   lbImg.sizes = "(min-width: 900px) 90vw, 100vw";
@@ -360,7 +441,7 @@
     if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
     else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
   });
-  function closeLb() { lb.hidden = true; lbImg.removeAttribute("src"); document.body.style.overflow = ""; if (lbReturn) lbReturn.focus(); }
+  function closeLb() { lb.hidden = true; lbImg.removeAttribute("src"); lbVideo.pause(); lbVideo.removeAttribute("src"); document.body.style.overflow = ""; if (lbReturn) lbReturn.focus(); }
   $(".lb-close").addEventListener("click", closeLb);
   $(".lb-prev").addEventListener("click", () => showLb(lbIdx - 1));
   $(".lb-next").addEventListener("click", () => showLb(lbIdx + 1));
@@ -459,9 +540,27 @@
       if (bad) ok = false;
     });
     if (!ok) { note.textContent = t("contact.missing"); return; }
-    const body = `${f.mensaje.value.trim()}\n\n${t("contact.from")}: ${f.nombre.value.trim()} <${f.correo.value.trim()}>`;
-    note.textContent = t("contact.opening");
-    location.href = `mailto:lislacuna09@gmail.com?subject=${encodeURIComponent(t("contact.subject"))}&body=${encodeURIComponent(body)}`;
+    if (f._honey.value) return;
+    const btn = $(".pill-btn", form);
+    btn.disabled = true;
+    note.textContent = t("contact.sending");
+    // FormSubmit reenvía el mensaje al correo; el primer envío pide activar el formulario desde ese correo
+    fetch("https://formsubmit.co/ajax/lislacuna09@gmail.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        nombre: f.nombre.value.trim(), correo: f.correo.value.trim(), mensaje: f.mensaje.value.trim(),
+        _replyto: f.correo.value.trim(), _subject: `${t("contact.subject")}: ${f.nombre.value.trim()}`,
+        _template: "table", _captcha: "false"
+      })
+    }).then(r => r.json().then(j => ({ ok: r.ok && String(j.success) === "true" })))
+      .then(({ ok }) => {
+        if (!ok) throw new Error("formsubmit");
+        note.textContent = t("contact.sent");
+        form.reset();
+      })
+      .catch(() => { note.innerHTML = t("contact.error"); })
+      .finally(() => { btn.disabled = false; });
   });
   form.addEventListener("input", e => { if (e.target.getAttribute("aria-invalid") === "true") e.target.setAttribute("aria-invalid", "false"); });
 

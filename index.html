@@ -122,6 +122,7 @@
           <input id="f-correo" name="correo" type="email" autocomplete="email" required placeholder="Correo" data-i18n-ph="contact.email" />
           <label class="sr" for="f-mensaje" data-i18n="contact.msg">Mensaje</label>
           <textarea id="f-mensaje" name="mensaje" required placeholder="Mensaje" data-i18n-ph="contact.msg"></textarea>
+          <input class="sr" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <button type="submit" class="pill-btn" data-i18n="contact.send">ENVIAR</button>
           <p class="form-note" id="form-note" role="status"></p>
         </form>
@@ -134,6 +135,10 @@
           <img src="assets/img/icono-b.svg" width="38" height="38" alt="" />
           <span><small data-i18n="contact.follow">Sígueme en</small><b>@lislacuna</b></span>
         </a>
+        <a class="contact-item ci-be" href="https://www.behance.net/lislacuna" target="_blank" rel="noopener">
+          <img src="assets/img/icono-behance.svg" width="38" height="38" alt="" />
+          <span><small data-i18n="contact.behance">Mi portafolio en</small><b>Behance</b></span>
+        </a>
       </div>
     </section>
   </main>
@@ -142,6 +147,7 @@
     <button type="button" class="lb-close" aria-label="Cerrar" data-i18n-aria="aria.close">&times;</button>
     <button type="button" class="lb-prev arrow" aria-label="Anterior" data-i18n-aria="aria.prev"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M24 2L3 23l21 21"/></svg></button>
     <img class="lb-img" alt="" />
+    <video class="lb-img lb-video" controls playsinline loop hidden></video>
     <button type="button" class="lb-next arrow" aria-label="Siguiente" data-i18n-aria="aria.next"><svg viewBox="0 0 26 46" aria-hidden="true"><path d="M2 2l21 21L2 44"/></svg></button>
     <p class="lb-count"></p>
   </div>
