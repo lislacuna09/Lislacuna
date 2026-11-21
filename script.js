@@ -256,18 +256,19 @@
     } else {
       secBody.classList.add("is-deck");
       if (s.type === "stack") {
+        const AFICHE_W = { a04: 712, a06: 733, a08: 712 };
         galList = s.items.map(id => {
-          const [name, kind] = id.split(":"), b = `assets/afiches/${name}`;
-          return kind === "v" ? { video: `${b}.mp4`, thumb: `${b}-t.webp` } : { src: `${b}.webp`, set: "", thumb: `${b}-t.webp` };
+          const [name, kind] = id.split(":"), b = `assets/afiches/${name}`, w = AFICHE_W[name] || 880, h = 1100;
+          return kind === "v" ? { video: `${b}.mp4`, thumb: `${b}-t.webp`, w, h } : { src: `${b}.webp`, set: "", thumb: `${b}-t.webp`, w, h };
         });
       } else {
         const sizes = (window.GALERIAS || {})[s.key] || [];
-        galList = sizes.map((_, i) => {
+        galList = sizes.map(([w, h], i) => {
           const b = `assets/galeria/${s.key}/${String(i + 1).padStart(2, "0")}`;
-          return { src: `${b}.webp`, set: `${b}-1200.webp 1200w, ${b}.webp 2000w`, thumb: `${b}-t.webp` };
+          return { src: `${b}.webp`, set: `${b}-1200.webp 1200w, ${b}.webp 2000w`, thumb: `${b}-t.webp`, w, h };
         });
       }
-      deck(label);
+      if (wide.matches) film(label); else deck(label);
     }
   }
 
@@ -388,6 +389,36 @@
   }
   let deckGo = null;
 
+  /* ---------- Tira de película (computador): las fotos se deslizan sin fin ---------- */
+  const wide = matchMedia("(min-width: 900px)");
+  wide.addEventListener("change", () => { if (route.name === "seccion" && secBody.classList.contains("is-deck")) renderSec(route.cat, route.p); });
+  function film(label) {
+    const n = galList.length, SPEED = 85; // px por segundo
+    const item = (g, i, copy) =>
+      `<button type="button" class="film-item${g.video ? " has-video" : ""}" data-i="${i}" ` +
+      (copy ? 'tabindex="-1" aria-hidden="true">' : `aria-label="${esc(label)} ${i + 1} / ${n} · ${t("open")}">`) +
+      `<img src="${g.thumb}" width="${g.w}" height="${g.h}" alt="" decoding="async" loading="${i < 10 && !copy ? "eager" : "lazy"}" /></button>`;
+    // dos copias seguidas: al llegar a la mitad la animación vuelve al inicio sin que se note el corte
+    secBody.insertAdjacentHTML("beforeend", `<div class="film" role="region" aria-roledescription="${t("deck.role")}" aria-label="${esc(label)}"><div class="film-track">` +
+      galList.map((g, i) => item(g, i, false)).join("") + galList.map((g, i) => item(g, i, true)).join("") + `</div></div>`);
+    const track = $(".film-track", secBody);
+    const tune = () => { const w = track.scrollWidth / 2; if (w) track.style.animationDuration = `${Math.round(w / SPEED)}s`; };
+    const ro = new ResizeObserver(tune);
+    ro.observe(track);
+    $$(".film-item", track).forEach(b => {
+      const g = galList[+b.dataset.i];
+      b.addEventListener("click", () => openLb(+b.dataset.i));
+      if (!g.video) return;
+      b.addEventListener("mouseenter", () => {
+        let v = $("video", b);
+        if (!v) { v = el("video", { muted: "", loop: "", playsinline: "", src: g.video, "aria-hidden": "true" }); v.muted = true; b.append(v); }
+        v.play().catch(() => {});
+      });
+      b.addEventListener("mouseleave", () => { const v = $("video", b); if (v) v.pause(); });
+    });
+    deckStop = () => { ro.disconnect(); $$("video", track).forEach(v => v.pause()); };
+  }
+
   /* ---------- Lightbox ---------- */
   const lb = $(".lightbox"), lbImg = $(".lb-img"), lbVideo = $(".lb-video"), lbCount = $(".lb-count");
   let lbIdx = 0, lbReturn = null;
@@ -452,7 +483,7 @@
       if (e.key === "ArrowRight") showLb(lbIdx + 1);
       return;
     }
-    if (e.target.closest("input, textarea")) return;
+    if (e.target.closest && e.target.closest("input, textarea")) return;
     const d = e.key === "ArrowLeft" ? -1 : e.key === "ArrowRight" ? 1 : 0;
     if (!d) return;
     if (route.name === "portafolio") setCat(catIdx + d);
