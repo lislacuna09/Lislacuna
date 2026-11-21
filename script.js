@@ -34,7 +34,7 @@
         { id: "digital", img: "proy-digital", sub: { es: "ILUSTRACIÓN", en: "DIGITAL" }, title: { es: "DIGITAL", en: "ILLUSTRATION" },
           credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "slide", src: "sec-digital" } },
         { id: "moda", img: "proy-moda", sub: { es: "ILUSTRACIÓN PARA", en: "ILLUSTRATION FOR" }, title: { es: "LA MODA", en: "FASHION" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "flip", book: "moda", pages: 15, w: 1600, h: 900, single: true } }
+          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "flip", book: "moda", pages: 14, w: 1600, h: 900 } }
       ]
     },
     {
@@ -43,11 +43,11 @@
       cover: "cat-fotografia-b",
       projects: [
         { id: "producto", img: "proy-producto", sub: { es: "FOTOGRAFÍA DE", en: "PRODUCT" }, title: { es: "PRODUCTO", en: "PHOTOGRAPHY" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "producto", shutter: true } },
+          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "producto" } },
         { id: "arquitectura", img: "proy-arquitectura", sub: { es: "FOTOGRAFÍA", en: "ARCHITECTURAL" }, title: { es: "ARQUITECTÓNICA", en: "PHOTOGRAPHY" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "arquitectura", shutter: true } },
+          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "arquitectura" } },
         { id: "modelos", img: "proy-modelos", sub: { es: "FOTOGRAFÍA DE", en: "MODEL" }, title: { es: "MODELOS", en: "PHOTOGRAPHY" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "modelos", shutter: true } }
+          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "gallery", key: "modelos" } }
       ]
     }
   ];
@@ -200,10 +200,10 @@
     fitTitles();
   }
 
-  /* ---------- Sonidos (obturador y hoja de papel) ---------- */
+  /* ---------- Sonido de hoja de papel (flipbooks) ---------- */
   // Los navegadores solo permiten sonido después de que la persona toca o hace clic en la página.
   const sfx = (() => {
-    let ac = null, shutterP = null;
+    let ac = null;
     const ctx = () => {
       if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; ac = new C(); }
       if (ac.state === "suspended") ac.resume();
@@ -211,22 +211,6 @@
     };
     ["pointerdown", "keydown", "touchstart"].forEach(ev => window.addEventListener(ev, ctx, { passive: true }));
     const ready = () => ac && ac.state === "running";
-    const loadShutter = () => shutterP || (shutterP = fetch("assets/audio/obturador.mp3")
-      .then(r => r.arrayBuffer())
-      .then(b => new Promise((ok, ko) => ac.decodeAudioData(b, ok, ko)))
-      .catch(e => { shutterP = null; throw e; }));
-    function shutter() {
-      if (!ready()) return;
-      loadShutter().then(buf => {
-        const src = ac.createBufferSource(), g = ac.createGain(), t0 = ac.currentTime;
-        src.buffer = buf;
-        g.gain.setValueAtTime(.85, t0);
-        g.gain.setValueAtTime(.85, t0 + .85);
-        g.gain.linearRampToValueAtTime(0, t0 + 1);
-        src.connect(g).connect(ac.destination);
-        src.start(t0, 0, 1);
-      }).catch(() => {});
-    }
     function page() {
       if (!ready()) return;
       const dur = .42, n = Math.floor(ac.sampleRate * dur), buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0);
@@ -245,7 +229,7 @@
       src.connect(hp).connect(bp).connect(g).connect(ac.destination);
       src.start(t0);
     }
-    return { shutter, page, preload: () => { if (ac) loadShutter().catch(() => {}); } };
+    return { page };
   })();
 
   /* ---------- Sección ---------- */
@@ -283,7 +267,7 @@
           return { src: `${b}.webp`, set: `${b}-1200.webp 1200w, ${b}.webp 2000w`, thumb: `${b}-t.webp` };
         });
       }
-      deck(label, !!s.shutter);
+      deck(label);
     }
   }
 
@@ -341,9 +325,8 @@
   }
 
   /* ---------- Mazo de fotos que se van pasando ---------- */
-  function deck(label, shutter) {
+  function deck(label) {
     const n = galList.length, VISIBLE = 5;
-    if (shutter) sfx.preload();
     secBody.insertAdjacentHTML("beforeend", `<div class="deck"${galList.some(g => g.video) ? ` style="--ar:.7"` : ""} role="region" aria-roledescription="${t("deck.role")}" aria-label="${esc(label)}">` +
       galList.map((g, i) => `<button type="button" class="deck-card" data-i="${i}" aria-label="${esc(label)} ${i + 1} / ${n} · ${t("open")}" tabindex="-1"><img src="${g.thumb}" alt="" decoding="async" ${i > VISIBLE ? 'loading="lazy"' : ""} /></button>`).join("") +
       `</div><div class="dots deck-bar"><span class="flip-knob"></span></div>`);
@@ -375,7 +358,6 @@
     function go(to) {
       const prev = cur;
       cur = (to + n) % n;
-      if (shutter && cur !== prev) sfx.shutter();
       layout(cur === (prev + 1) % n ? prev : -1);
       schedule();
     }
