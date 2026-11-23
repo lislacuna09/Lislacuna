@@ -204,6 +204,14 @@ body[data-route="portafolio"] .lang { color: var(--cafe); }
 .sec-media { width: 100%; max-width: calc((100svh - 200px) * 16 / 9); margin: 0 auto; aspect-ratio: 16 / 9; object-fit: contain; box-shadow: 0 20px 40px rgba(0, 0, 0, .25); background: rgba(0,0,0,.08); transition: transform .35s ease, box-shadow .35s ease; }
 .sec-zoom-btn:hover .sec-media { transform: scale(1.01); box-shadow: 0 26px 50px rgba(0, 0, 0, .32); }
 
+/* página de proyecto (Pito Ruta): video de cabecera bajo el menú */
+.v-sec.is-page { --sec-ink: var(--cafe); background-size: cover; background-attachment: fixed; }
+.v-sec.is-page .sec { padding-top: 0; }
+.v-sec.is-page .sec-back { position: absolute; top: 118px; left: 1rem; z-index: 5; margin: 0; }
+.sec-body.is-page { justify-content: flex-start; gap: 3.5rem; padding-bottom: 2rem; }
+.page-hero { position: relative; flex: none; align-self: stretch; margin-inline: -1rem; height: max(56.25vw, 62svh); overflow: hidden; background: var(--cafe); }
+.page-hero video { display: block; width: 100%; height: 100%; object-fit: cover; }
+
 /* flipbook */
 .flip-stage { width: min(100%, calc((100svh - 300px) * var(--r, .7))); margin: 0 auto; }
 .flip-book { width: 100%; opacity: 0; transition: opacity .4s; }
@@ -396,6 +404,10 @@ body[data-route="portafolio"] .lang { color: var(--cafe); }
   .flip-stage { width: min(100%, calc((100svh - var(--hu) * 330) * var(--r, .7) * 2)); }
   .flip-stage.is-single { width: min(100%, calc((100svh - var(--hu) * 330) * var(--r, .7))); }
   .sec-back { position: absolute; top: calc(var(--hu) * 188); left: calc(var(--hu) * 109 - 12px); z-index: 2; }
+  .v-sec.is-page .sec { padding-top: 0; }
+  .v-sec.is-page .sec-back { top: calc(var(--hu) * 188); left: calc(var(--hu) * 109 - 12px); }
+  .page-hero { height: 100svh; margin-inline: calc(var(--hu) * -109); }
+  .sec-body.is-page { gap: calc(var(--hu) * 110); }
   .sec-media { max-width: min(100%, calc((100svh - var(--hu) * 260) * 16 / 9)); }
 
   /* CONTACTO (1920 × 1080) */

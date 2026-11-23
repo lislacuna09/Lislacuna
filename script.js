@@ -29,8 +29,10 @@
       name: { es: "ILUSTRACIÓN", en: "ILLUSTRATION" },
       cover: "cat-ilustracion-b",
       projects: [
-        { id: "analoga", img: "proy-analoga", sub: { es: "ILUSTRACIÓN", en: "ANALOG" }, title: { es: "ANÁLOGA", en: "ILLUSTRATION" },
-          credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "slide", src: "sec-analoga" } },
+        { id: "pitoruta", img: "proy-pitoruta", sub: { es: "PROYECTO", en: "PROJECT" }, title: { es: "PITO RUTA", en: "PITO RUTA" },
+          credit: { es: "Proyecto grupal.", en: "Group project." },
+          section: { type: "page", bg: "tex-lavanda", hero: "assets/pitoruta/portada.mp4",
+            flip: { book: "pitoruta", pages: 19, w: 1600, h: 900 }, gallery: "PITORUTA" } },
         { id: "digital", img: "proy-digital", sub: { es: "ILUSTRACIÓN", en: "DIGITAL" }, title: { es: "DIGITAL", en: "ILLUSTRATION" },
           credit: { es: "Proyectos individuales.", en: "Individual projects." }, section: { type: "slide", src: "sec-digital" } },
         { id: "moda", img: "proy-moda", sub: { es: "ILUSTRACIÓN PARA", en: "ILLUSTRATION FOR" }, title: { es: "LA MODA", en: "FASHION" },
@@ -237,15 +239,30 @@
   let galList = [];
 
   function renderSec(cat, p) {
-    secView.style.backgroundImage = `url(${IMG}${cat.tex}.webp)`;
+    const s = p.section;
+    secView.style.backgroundImage = `url(${IMG}${s.bg || cat.tex}.webp)`;
+    secView.classList.toggle("is-page", s.type === "page");
     secBack.href = `#portafolio/${cat.id}`;
     secBack.setAttribute("aria-label", `${t("back")}: ${L(cat.name)}`);
     stopSection();
     secBody.className = "sec-body";
-    const s = p.section;
     const label = `${L(p.sub)} ${L(p.title)}`;
-    secBody.innerHTML = `<h1 class="sr">${esc(label)}</h1>`;
-    if (s.type === "slide") {
+    secBody.innerHTML = `<h1 class="sr">${esc(s.type === "page" ? L(p.title) : label)}</h1>`;
+    if (s.type === "page") {
+      // página completa del proyecto: video de cabecera (bajo el menú), revista y galería
+      secBody.classList.add("is-page", "is-deck");
+      secBody.insertAdjacentHTML("beforeend", `<div class="page-hero"><video src="${s.hero}" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video></div>`);
+      const v = $(".page-hero video", secBody);
+      v.muted = true;
+      v.play().catch(() => {});
+      flipbook(s.flip, L(p.title));
+      galList = (window[s.gallery] || []).map(it => {
+        const b = `assets/pitoruta/${it.id}`;
+        return it.video ? { video: `${b}.mp4`, thumb: `${b}-t.webp`, w: it.w, h: it.h }
+          : { src: `${b}.webp`, set: `${b}-1200.webp 1200w, ${b}.webp 2000w`, thumb: `${b}-t.webp`, w: it.w, h: it.h };
+      });
+      if (wide.matches) film(L(p.title)); else deck(L(p.title));
+    } else if (s.type === "slide") {
       galList = [{ src: `${IMG}${s.src}.webp`, set: `${IMG}${s.src}-1280.webp 1280w, ${IMG}${s.src}.webp 2560w` }];
       secBody.insertAdjacentHTML("beforeend", `<button type="button" class="sec-zoom-btn" aria-label="${esc(t("open"))}: ${esc(label)}">` +
         `<img class="sec-media" src="${IMG}${s.src}.webp" srcset="${galList[0].set}" sizes="(min-width: 900px) 88vw, 100vw" width="2560" height="1440" decoding="async" alt="${esc(label)}" /></button>`);
